@@ -11,3 +11,8 @@ void UCPP_EventRelay::NotifySomethingHappened()
 {
 	OnSomethingHappened.Broadcast();
 }
+
+void UCPP_EventRelay::NotifyGameDataUpdated(FEventTagsStruct TagsStruct)
+{
+	OnGameDataUpdated.Broadcast(TagsStruct);
+}

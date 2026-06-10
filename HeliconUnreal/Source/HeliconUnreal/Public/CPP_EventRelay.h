@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
+#include "EventTagsStruct.h"
 #include "CPP_EventRelay.generated.h"
 
 /////////////////////
@@ -12,6 +13,7 @@
 
 // A bullshit event delegate for testing and demonstration. Delete later.
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSomethingHappened);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameDataUpdated, FEventTagsStruct, TagsStruct);
 // and so on...
 // ...
 
@@ -29,6 +31,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnSomethingHappened OnSomethingHappened;
 	
+	UPROPERTY(BlueprintAssignable)
+	FOnGameDataUpdated OnGameDataUpdated;
+	
 	// and so on...
 	// ...
 	
@@ -39,6 +44,9 @@ public:
 	// A bullshit notifier function for testing and demonstration. Delete later.
 	UFUNCTION(BlueprintCallable)
 	void NotifySomethingHappened();
+	
+	UFUNCTION(BlueprintCallable)
+	void NotifyGameDataUpdated(FEventTagsStruct TagsStruct);
 	
 	UFUNCTION()
 	void SayHello();
