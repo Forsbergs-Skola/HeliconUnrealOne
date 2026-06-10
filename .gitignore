@@ -1,0 +1,21 @@
+# Unreal build output
+HeliconUnreal/Binaries/
+HeliconUnreal/Build/
+HeliconUnreal/Intermediate/
+HeliconUnreal/Saved/
+HeliconUnreal/DerivedDataCache/
+HeliconUnreal/FileOpenOrder/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Compiled files
+*.pdb
+*.exp
+*.lib
+
+# Exclude packaged builds
+*.pak
+*.sig
