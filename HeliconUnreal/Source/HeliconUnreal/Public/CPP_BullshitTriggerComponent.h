@@ -4,17 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "SimpleStateMachine.generated.h"
+#include "CPP_BullshitTriggerComponent.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class HELICONUNREAL_API USimpleStateMachine : public UActorComponent
+class HELICONUNREAL_API UCPP_BullshitTriggerComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:	
 	// Sets default values for this component's properties
-	USimpleStateMachine();
+	UCPP_BullshitTriggerComponent();
 
 protected:
 	// Called when the game starts
@@ -23,6 +23,8 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
+	
+	UFUNCTION(BlueprintCallable)
+	void MakeSomeBullshitHappen();
 		
 };
