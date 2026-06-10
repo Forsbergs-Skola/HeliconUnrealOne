@@ -42,6 +42,8 @@ AHeliconUnrealCharacter::AHeliconUnrealCharacter()
 	// Configure character movement
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
 	GetCharacterMovement()->AirControl = 0.5f;
+	
+	CurrentInteractable = nullptr;
 }
 
 void AHeliconUnrealCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -59,6 +61,10 @@ void AHeliconUnrealCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 		// Looking/Aiming
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AHeliconUnrealCharacter::LookInput);
 		EnhancedInputComponent->BindAction(MouseLookAction, ETriggerEvent::Triggered, this, &AHeliconUnrealCharacter::LookInput);
+		
+		/** Olle adding*/
+		// Interact
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AHeliconUnrealCharacter::DoInteract);
 	}
 	else
 	{
@@ -117,4 +123,18 @@ void AHeliconUnrealCharacter::DoJumpEnd()
 {
 	// pass StopJumping to the character
 	StopJumping();
+}
+
+void AHeliconUnrealCharacter::DoInteract()
+{
+	GEngine->AddOnScreenDebugMessage(
+		-1,
+		2.f,
+		FColor::Yellow,
+		TEXT("INTERACT")
+	);
+}
+void AHeliconUnrealCharacter::SetCurrentInteractable(AActor* NewInteractable)
+{
+	CurrentInteractable = NewInteractable;
 }

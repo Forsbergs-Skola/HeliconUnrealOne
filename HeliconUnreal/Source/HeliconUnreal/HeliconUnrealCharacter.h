@@ -49,6 +49,14 @@ protected:
 	UPROPERTY(EditAnywhere, Category ="Input")
 	class UInputAction* MouseLookAction;
 	
+	/** Olle adding*/
+	/** Interact Input Action */
+	UPROPERTY(EditAnywhere, Category ="Input")
+	class UInputAction* InteractAction;
+	
+	UPROPERTY(BlueprintReadWrite, Category="Interaction")
+	AActor*CurrentInteractable;
+	
 public:
 	AHeliconUnrealCharacter();
 
@@ -75,6 +83,14 @@ protected:
 	/** Handles jump end inputs from either controls or UI interfaces */
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void DoJumpEnd();
+	
+	/** Olle adding*/
+	/** Handles interaction inputs */
+	UFUNCTION(BlueprintCallable, Category="Interaction")
+	virtual void DoInteract();
+	
+	UFUNCTION(BlueprintCallable, Category="Interaction")
+	void SetCurrentInteractable(AActor* NewInteractable);
 
 protected:
 
