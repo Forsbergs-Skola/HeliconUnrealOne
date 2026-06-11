@@ -9,6 +9,8 @@
 #include "InputActionValue.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "HeliconUnreal.h"
+#include "Interactable.h"
+
 
 AHeliconUnrealCharacter::AHeliconUnrealCharacter()
 {
@@ -127,13 +129,13 @@ void AHeliconUnrealCharacter::DoJumpEnd()
 
 void AHeliconUnrealCharacter::DoInteract()
 {
-	GEngine->AddOnScreenDebugMessage(
-		-1,
-		2.f,
-		FColor::Yellow,
-		TEXT("INTERACT")
-	);
+	if (CurrentInteractable &&
+		CurrentInteractable->Implements<UInteractable>())
+	{
+		IInteractable::Execute_Interact(CurrentInteractable);
+	}
 }
+
 void AHeliconUnrealCharacter::SetCurrentInteractable(AActor* NewInteractable)
 {
 	CurrentInteractable = NewInteractable;
