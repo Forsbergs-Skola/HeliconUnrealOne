@@ -11,6 +11,9 @@
 // Event Delegates //
 /////////////////////
 
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPuzzleCompleted, FEventTagsStruct, TagsStruct);
+
 // A bullshit event delegate for testing and demonstration. Delete later.
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSomethingHappened);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameDataUpdated, FEventTagsStruct, TagsStruct);
@@ -26,6 +29,9 @@ public:
 	/////////////////
 	// Dispatchers // <- Listen for on the listener side
 	/////////////////
+	
+	UPROPERTY(BlueprintAssignable)
+	FOnPuzzleCompleted OnPuzzleCompleted;
 	
 	// A bullshit event dispatcher for testing and demonstration. Delete later.
 	UPROPERTY(BlueprintAssignable)
@@ -47,6 +53,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void NotifyGameDataUpdated(FEventTagsStruct TagsStruct);
+	
+	UFUNCTION(BlueprintCallable)
+	void NotifyPuzzleCompleted(FEventTagsStruct TagsStruct);
 	
 	UFUNCTION()
 	void SayHello();

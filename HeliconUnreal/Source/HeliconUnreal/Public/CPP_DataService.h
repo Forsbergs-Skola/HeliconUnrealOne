@@ -24,11 +24,15 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int SecondsPlayed;
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int CompletedPuzzles;
 	
 	UFUNCTION(BlueprintCallable)
 	void SetSecondsPlayed(int value);
 	
 	UFUNCTION(BlueprintCallable)
-	void SayHello();
+	void IncrementCompletedPuzzles();
 	
+	UFUNCTION(BlueprintCallable)
+	void SayHello();
 };
