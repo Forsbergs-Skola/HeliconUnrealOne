@@ -15,6 +15,9 @@
 //
 // See int SecondsPlayed / SetSecondsPlayed(int value) for an example.
 
+// Last edit by Milo 
+// Added CompletedPuzzles UPROPERTY
+
 
 UCLASS()
 class HELICONUNREAL_API UCPP_DataService : public UObject
@@ -24,11 +27,15 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int SecondsPlayed;
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int CompletedPuzzles;
 	
 	UFUNCTION(BlueprintCallable)
 	void SetSecondsPlayed(int value);
 	
 	UFUNCTION(BlueprintCallable)
-	void SayHello();
+	void IncrementCompletedPuzzles();
 	
+	UFUNCTION(BlueprintCallable)
+	void SayHello();
 };

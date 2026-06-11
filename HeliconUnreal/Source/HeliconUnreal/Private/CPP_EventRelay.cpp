@@ -16,3 +16,8 @@ void UCPP_EventRelay::NotifyGameDataUpdated(FEventTagsStruct TagsStruct)
 {
 	OnGameDataUpdated.Broadcast(TagsStruct);
 }
+
+void UCPP_EventRelay::NotifyPuzzleCompleted(FEventTagsStruct TagsStruct)
+{
+	OnPuzzleCompleted.Broadcast(TagsStruct);
+}
