@@ -21,3 +21,23 @@ void UCPP_EventRelay::NotifyPuzzleCompleted(FEventTagsStruct TagsStruct)
 {
 	OnPuzzleCompleted.Broadcast(TagsStruct);
 }
+
+void UCPP_EventRelay::NotifyConvoStarted(FEventTagsStruct TagsStruct)
+{
+	OnConvoStarted.Broadcast(TagsStruct);
+}
+
+void UCPP_EventRelay::NotifyConvoEnded(FEventTagsStruct TagsStruct)
+{
+	OnConvoEnded.Broadcast(TagsStruct);
+}
+
+void UCPP_EventRelay::NotifyDialogueLineWritten(FEventTagsStruct TagsStruct)
+{
+	OnDialogueLineWritten.Broadcast(TagsStruct);
+}
+
+void UCPP_EventRelay::NotifyDialogueChoiceTaken(FEventTagsStruct TagsStruct)
+{
+	OnDialogueChoiceTaken.Broadcast(TagsStruct);
+}
