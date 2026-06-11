@@ -2,10 +2,17 @@
 /shelf/
 /workspace.xml
 # Rider ignored files
+<<<<<<< HEAD
 /projectSettingsUpdater.xml
 /modules.xml
 /contentModel.xml
 /.idea.HeliconUnreal.iml
+=======
+/modules.xml
+/.idea.HeliconUnreal.iml
+/projectSettingsUpdater.xml
+/contentModel.xml
+>>>>>>> dev
 # Editor-based HTTP Client requests
 /httpRequests/
 # Ignored default folder with query files
