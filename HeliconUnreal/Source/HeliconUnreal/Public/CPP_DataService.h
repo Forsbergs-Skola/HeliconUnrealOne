@@ -15,9 +15,6 @@
 //
 // See int SecondsPlayed / SetSecondsPlayed(int value) for an example.
 
-// Last edit by Milo 
-// Added CompletedPuzzles UPROPERTY
-
 
 UCLASS()
 class HELICONUNREAL_API UCPP_DataService : public UObject
