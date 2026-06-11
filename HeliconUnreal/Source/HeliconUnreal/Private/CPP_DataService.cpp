@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// CPP_DataService.cpp
 
 #include "CPP_DataService.h"
 #include "CPP_HeliconGameInstance.h"
