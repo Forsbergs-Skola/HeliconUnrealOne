@@ -22,7 +22,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
 	bool bIsQuit = false;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
 	FEventTagsStruct ChoiceTakenTags;
 	
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")

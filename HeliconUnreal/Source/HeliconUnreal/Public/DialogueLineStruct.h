@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
 #include "EventTagsStruct.h"
+
 #include "DialogueLineStruct.generated.h"
 
 USTRUCT(BlueprintType)
@@ -26,7 +27,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
 	bool bIsQuit;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
+	UTexture2D* PortraitTexture;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
 	FEventTagsStruct LineWrittenTags;
 	
 };
