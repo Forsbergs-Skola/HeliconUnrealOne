@@ -129,10 +129,24 @@ void AHeliconUnrealCharacter::DoJumpEnd()
 
 void AHeliconUnrealCharacter::DoInteract()
 {
-	if (CurrentInteractable &&
-		CurrentInteractable->Implements<UInteractable>())
+	if (CurrentInteractable)
 	{
-		IInteractable::Execute_Interact(CurrentInteractable);
+		UE_LOG(LogTemp, Warning, TEXT("Has Interactable"));
+
+		if (CurrentInteractable->Implements<UInteractable>())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Implements Interface"));
+
+			IInteractable::Execute_Interact(CurrentInteractable);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("DOES NOT IMPLEMENT INTERFACE"));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("NO INTERACTABLE"));
 	}
 }
 
