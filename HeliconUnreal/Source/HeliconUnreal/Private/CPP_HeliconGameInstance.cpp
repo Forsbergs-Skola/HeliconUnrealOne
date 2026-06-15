@@ -1,7 +1,7 @@
 // CPP_HeliconGameInstance.cpp 
 
 #include "CPP_HeliconGameInstance.h"
-#include "K2Node_ConstructObjectFromClass.h"
+//#include "K2Node_ConstructObjectFromClass.h"
 
 void UCPP_HeliconGameInstance::Init()
 {
@@ -15,4 +15,8 @@ void UCPP_HeliconGameInstance::Init()
 	// Create the DataService
 	DataService = NewObject<UCPP_DataService>(this, UCPP_DataService::StaticClass());
 	DataService->SayHello();
+	
+	// Create the DialogueService
+	DialogueService = NewObject<UCPP_DialogueService>(this, UCPP_DialogueService::StaticClass());
+	DialogueService->SayHello();
 }

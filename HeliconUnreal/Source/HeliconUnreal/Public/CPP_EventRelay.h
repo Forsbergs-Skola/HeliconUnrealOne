@@ -17,6 +17,10 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPuzzleCompleted, FEventTagsStruct
 // A bullshit event delegate for testing and demonstration. Delete later.
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSomethingHappened);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameDataUpdated, FEventTagsStruct, TagsStruct);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnConvoStarted, FEventTagsStruct, TagsStruct);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnConvoEnded, FEventTagsStruct, TagsStruct);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDialogueLineWritten, FEventTagsStruct, TagsStruct);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDialogueChoiceTaken, FEventTagsStruct, TagsStruct);
 // and so on...
 // ...
 
@@ -40,6 +44,18 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnGameDataUpdated OnGameDataUpdated;
 	
+	UPROPERTY(BlueprintAssignable)
+	FOnConvoStarted OnConvoStarted;
+	
+	UPROPERTY(BlueprintAssignable)
+	FOnConvoEnded OnConvoEnded;
+	
+	UPROPERTY(BlueprintAssignable)
+	FOnDialogueLineWritten OnDialogueLineWritten;
+	
+	UPROPERTY(BlueprintAssignable)
+	FOnDialogueChoiceTaken OnDialogueChoiceTaken;
+	
 	// and so on...
 	// ...
 	
@@ -56,6 +72,18 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void NotifyPuzzleCompleted(FEventTagsStruct TagsStruct);
+	
+	UFUNCTION(BlueprintCallable)
+	void NotifyConvoStarted(FEventTagsStruct TagsStruct);
+	
+	UFUNCTION(BlueprintCallable)
+	void NotifyConvoEnded(FEventTagsStruct TagsStruct);
+	
+	UFUNCTION(BlueprintCallable)
+	void NotifyDialogueLineWritten(FEventTagsStruct TagsStruct);
+	
+	UFUNCTION(BlueprintCallable)
+	void NotifyDialogueChoiceTaken(FEventTagsStruct TagsStruct);
 	
 	UFUNCTION()
 	void SayHello();
