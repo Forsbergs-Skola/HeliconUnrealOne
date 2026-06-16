@@ -21,6 +21,8 @@ void ASuspector::BeginPlay()
    const UCPP_HeliconGameInstance* GameInstance = Cast<UCPP_HeliconGameInstance>(GetWorld()->GetGameInstance());
   
    BindEvents(GameInstance);
+   
+   
 }
 
 void ASuspector::OnConstruction(const FTransform& Transform)

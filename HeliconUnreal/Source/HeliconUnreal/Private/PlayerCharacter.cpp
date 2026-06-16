@@ -1,34 +1,125 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "PlayerCharacter.h"
 
-// Sets default values
+#include "EnhancedInputSubsystems.h"
+#include "Components/StaticMeshComponent.h"
+#include "Camera/CameraComponent.h"
+#include "Engine/LocalPlayer.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Engine/StaticMesh.h"
+#include "InputMappingContext.h"
+#include "EnhancedInputComponent.h"
+#include "Interactable.h"
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+
 APlayerCharacter::APlayerCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
+	PrimaryActorTick.bCanEverTick = false;
+    
+	bUseControllerRotationPitch = true;
+	bUseControllerRotationYaw = true;
+	bUseControllerRotationRoll = false;
+    
+	GetCharacterMovement()->bOrientRotationToMovement = false;
+    
+	FirstPersonCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
+	FirstPersonCamera->SetupAttachment(GetCapsuleComponent());
+	FirstPersonCamera->bUsePawnControlRotation = true;
 }
 
-// Called when the game starts or when spawned
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+    
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (!PlayerController)
+	{
+		return;
+	}
+    
+	ULocalPlayer* LocalPlayer = PlayerController->GetLocalPlayer();
+	if (!LocalPlayer)
+	{
+		return;
+	}
+    
+	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer);
+    
+	if (Subsystem && DefaultMappingContext)
+	{
+		Subsystem->AddMappingContext(DefaultMappingContext, 0);
+	}
 }
 
-// Called every frame
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
 
-// Called to bind functionality to input
+void APlayerCharacter::OnMove(const FInputActionValue& Value)
+{
+	const FVector2D MovementValue = Value.Get<FVector2D>();
+    
+	if (!Controller)
+	{
+		return;
+	}
+    
+	const FRotator ControllerRotation = Controller->GetControlRotation();
+	const FRotator YawRotation(0.0f, ControllerRotation.Yaw, 0.0f);
+    
+	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+    
+	AddMovementInput(ForwardDirection, MovementValue.Y);
+	AddMovementInput(RightDirection, MovementValue.X);
+}
+
+void APlayerCharacter::OnCrouch(const FInputActionValue& Value)
+{
+}
+
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+    
+	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
+	if (!EnhancedInputComponent)
+	{
+		return;
+	}
+    
+	if (MoveAction)
+	{
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayerCharacter::OnMove);
+	}
+    
+	if (LookAction)
+	{
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerCharacter::OnLook);
+	}
+}
 
+void APlayerCharacter::OnLook(const FInputActionValue& Value)
+{
+	const FVector2D LookValue = Value.Get<FVector2D>();
+    
+	AddControllerYawInput(LookValue.X);
+	AddControllerPitchInput(LookValue.Y);
+}
+
+void APlayerCharacter::DoInteract()
+{
+	if (CurrentInteractable &&
+		CurrentInteractable->Implements<UInteractable>())
+	{
+		IInteractable::Execute_Interact(CurrentInteractable);
+	}
+}
+
+void APlayerCharacter::SetCurrentInteractable(AActor* NewInteractable)
+{
+	CurrentInteractable = NewInteractable;
 }
 

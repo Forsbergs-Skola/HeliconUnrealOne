@@ -23,8 +23,6 @@ public:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	UCPP_DialogueService* DialogueService;
 	
-	
-	
 	UFUNCTION()
 	virtual void Init() override;
 };
