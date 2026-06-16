@@ -44,6 +44,24 @@ void UCPP_DataService::IncrementCompletedPuzzles()
 	LOG_FAILED_CAST;
 }
 
+void UCPP_DataService::SetSlidingPuzzleIsSolved(bool value)
+{
+	bSlidingPuzzleIsSolved = value;
+	UCPP_HeliconGameInstance* GI = Cast<UCPP_HeliconGameInstance>(GetWorld()->GetGameInstance());
+	
+	if (GI)
+	{
+		FEventTagsStruct TagStruct;
+		TArray<FName> _TagsList;
+		_TagsList.Add("SLIDING_PUZZLE");
+		TagStruct.TagsList = _TagsList;
+		
+		GI->EventRelay->NotifyPuzzleCompleted(TagStruct);
+		return;
+	}
+	
+}
+
 void UCPP_DataService::SayHello()
 {
 	UE_LOG(LogTemp, Log, TEXT("Hello data service!"));

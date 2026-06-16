@@ -23,6 +23,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDialogueLineWritten, FEventTagsSt
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDialogueChoiceTaken, FEventTagsStruct, TagsStruct);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSwitchPuzzleActivated, FEventTagsStruct, TagsStruct);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSwitchPuzzleDeactivated, FEventTagsStruct, TagsStruct);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSlidingPuzzleActivated, FEventTagsStruct, TagsStruct);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSlidingPuzzleDeactivated, FEventTagsStruct, TagsStruct);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSlidingPuzzleSolved, FEventTagsStruct, TagsStruct);
 // and so on...
 // ...
 
@@ -64,6 +67,14 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnSwitchPuzzleDeactivated OnSwitchPuzzleDeactivated;
 	
+	UPROPERTY(BlueprintAssignable)
+	FOnSlidingPuzzleActivated OnSlidingPuzzleActivated;
+	
+	UPROPERTY(BlueprintAssignable)
+	FOnSlidingPuzzleDeactivated OnSlidingPuzzleDeactivated;
+	
+	UPROPERTY(BlueprintAssignable)
+	FOnSlidingPuzzleSolved OnSlidingPuzzleSolved;
 	// and so on...
 	// ...
 	
@@ -98,6 +109,18 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void NotifySwitchPuzzleDeactivated(FEventTagsStruct TagsStruct);
+	
+	UFUNCTION(BlueprintCallable)
+	void NotifySlidingPuzzleActivated(FEventTagsStruct TagsStruct);
+	
+	UFUNCTION(BlueprintCallable)
+	void NotifySlidingPuzzleDeactivated(FEventTagsStruct TagsStruct);
+	
+	UFUNCTION(BlueprintCallable)
+	void NotifySlidingPuzzleSolved(FEventTagsStruct TagsStruct);
+	
+	
+	
 	
 	UFUNCTION()
 	void SayHello();

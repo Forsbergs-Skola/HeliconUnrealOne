@@ -51,3 +51,18 @@ void UCPP_EventRelay::NotifySwitchPuzzleDeactivated(FEventTagsStruct TagsStruct)
 {
 	OnSwitchPuzzleDeactivated.Broadcast(TagsStruct);
 }
+
+void UCPP_EventRelay::NotifySlidingPuzzleActivated(FEventTagsStruct TagsStruct)
+{
+	OnSlidingPuzzleActivated.Broadcast(TagsStruct);
+}
+
+void UCPP_EventRelay::NotifySlidingPuzzleDeactivated(FEventTagsStruct TagsStruct)
+{
+	OnSlidingPuzzleDeactivated.Broadcast(TagsStruct);
+}
+
+void UCPP_EventRelay::NotifySlidingPuzzleSolved(FEventTagsStruct TagsStruct)
+{
+	OnSlidingPuzzleSolved.Broadcast(TagsStruct);
+}

@@ -27,11 +27,20 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int CompletedPuzzles;
 	
+	// There will be a pickup somewhere that is only enabled if this is true.
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bSlidingPuzzleIsSolved;
+	
 	UFUNCTION(BlueprintCallable)
 	void SetSecondsPlayed(int value);
 	
 	UFUNCTION(BlueprintCallable)
 	void IncrementCompletedPuzzles();
+	
+	UFUNCTION(BlueprintCallable)
+	void SetSlidingPuzzleIsSolved(bool value);
+	
+	
 	
 	UFUNCTION(BlueprintCallable)
 	void SayHello();

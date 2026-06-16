@@ -17,5 +17,9 @@ void UCPP_HeliconGameInstance::Init()
 	// Create the DataService
 	DataService = NewObject<UCPP_DataService>(this, UCPP_DataService::StaticClass());
 	DataService->SayHello();
+	
+	// Create the DialogueService
+	DialogueService = NewObject<UCPP_DialogueService>(this, UCPP_DialogueService::StaticClass());
+	DialogueService->SayHello();
 		
 }
