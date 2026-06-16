@@ -31,7 +31,6 @@ void ASuspector::OnConstruction(const FTransform& Transform)
    {
       StaticMeshComponent->SetStaticMesh(StaticMesh);
    }
-   
 }
 
 
