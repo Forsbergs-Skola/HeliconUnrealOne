@@ -28,6 +28,9 @@ public:
 	bool bIsQuit;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
+	bool bShowPortrait = false;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
 	UTexture2D* PortraitTexture;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")

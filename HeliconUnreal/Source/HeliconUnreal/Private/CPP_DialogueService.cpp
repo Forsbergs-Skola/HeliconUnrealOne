@@ -31,6 +31,7 @@ void UCPP_DialogueService::EndConvo()
 {
 	if (!bDialogueActive)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("What dialogue?"));
 		return;
 	}
 	bDialogueActive = false;
