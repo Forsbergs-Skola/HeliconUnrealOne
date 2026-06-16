@@ -21,6 +21,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnConvoStarted, FEventTagsStruct, T
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnConvoEnded, FEventTagsStruct, TagsStruct);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDialogueLineWritten, FEventTagsStruct, TagsStruct);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDialogueChoiceTaken, FEventTagsStruct, TagsStruct);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSwitchPuzzleActivated, FEventTagsStruct, TagsStruct);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSwitchPuzzleDeactivated, FEventTagsStruct, TagsStruct);
 // and so on...
 // ...
 
@@ -56,6 +58,12 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnDialogueChoiceTaken OnDialogueChoiceTaken;
 	
+	UPROPERTY(BlueprintAssignable)
+	FOnSwitchPuzzleActivated OnSwitchPuzzleActivated;
+	
+	UPROPERTY(BlueprintAssignable)
+	FOnSwitchPuzzleDeactivated OnSwitchPuzzleDeactivated;
+	
 	// and so on...
 	// ...
 	
@@ -84,6 +92,12 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void NotifyDialogueChoiceTaken(FEventTagsStruct TagsStruct);
+	
+	UFUNCTION(BlueprintCallable)
+	void NotifySwitchPuzzleActivated(FEventTagsStruct TagsStruct);
+	
+	UFUNCTION(BlueprintCallable)
+	void NotifySwitchPuzzleDeactivated(FEventTagsStruct TagsStruct);
 	
 	UFUNCTION()
 	void SayHello();

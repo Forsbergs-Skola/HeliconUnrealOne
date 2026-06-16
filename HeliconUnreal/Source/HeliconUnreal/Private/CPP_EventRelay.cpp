@@ -41,3 +41,13 @@ void UCPP_EventRelay::NotifyDialogueChoiceTaken(FEventTagsStruct TagsStruct)
 {
 	OnDialogueChoiceTaken.Broadcast(TagsStruct);
 }
+
+void UCPP_EventRelay::NotifySwitchPuzzleActivated(FEventTagsStruct TagsStruct)
+{
+	OnSwitchPuzzleActivated.Broadcast(TagsStruct);
+}
+
+void UCPP_EventRelay::NotifySwitchPuzzleDeactivated(FEventTagsStruct TagsStruct)
+{
+	OnSwitchPuzzleDeactivated.Broadcast(TagsStruct);
+}
