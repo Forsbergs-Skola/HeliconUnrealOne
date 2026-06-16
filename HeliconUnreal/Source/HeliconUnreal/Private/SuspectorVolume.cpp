@@ -1,9 +1,7 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "SuspectorVolume.h"
 
-// Sets default values
+#include "Math/UnrealMathUtility.h"
+
 ASuspectorVolume::ASuspectorVolume()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -11,11 +9,16 @@ ASuspectorVolume::ASuspectorVolume()
 
 }
 
+void ASuspectorVolume::OnConstruction(const FTransform& Transform){
+	Super::OnConstruction(Transform);
+	
+}
+
 // Called when the game starts or when spawned
 void ASuspectorVolume::BeginPlay()
 {
 	Super::BeginPlay();
-	SuspectorVolumeScale = GetActorScale();
+	VolumeScale = GetActorScale();
 	
 }
 
@@ -25,4 +28,12 @@ void ASuspectorVolume::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
+
+void ASuspectorVolume::SpawnSuspectorActors()
+{
+	
+	
+}
+
+
 

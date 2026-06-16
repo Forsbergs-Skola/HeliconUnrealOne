@@ -17,14 +17,5 @@ void UCPP_HeliconGameInstance::Init()
 	// Create the DataService
 	DataService = NewObject<UCPP_DataService>(this, UCPP_DataService::StaticClass());
 	DataService->SayHello();
-	
-<<<<<<< HEAD
-	UGameUserSettings* Settings = GEngine->GetGameUserSettings();
-	Settings->RunHardwareBenchmark();
-	
-=======
-	// Create the DialogueService
-	DialogueService = NewObject<UCPP_DialogueService>(this, UCPP_DialogueService::StaticClass());
-	DialogueService->SayHello();
->>>>>>> dev
+		
 }
