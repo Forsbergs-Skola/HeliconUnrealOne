@@ -34,6 +34,9 @@ public:
    bool bDisableRandom;
    
    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Suspect")
+   bool bUsePhysics;
+   
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Suspect")
    bool bDisableRandomRotation;
    
    // You only need to select an enum value here if you disabled randomness
@@ -88,4 +91,6 @@ private:
    int CurrentTargetPointIndex = 0;
    int CurrentRotationIndex = 0;
    int MaxRandomCheckRotation = 20;
+   
+   FVector StartingLocation;
 };

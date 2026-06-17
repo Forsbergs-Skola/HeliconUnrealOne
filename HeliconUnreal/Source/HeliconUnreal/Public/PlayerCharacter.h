@@ -58,7 +58,6 @@ public:
 	void DoInteract();
 	void SetCurrentInteractable(AActor* NewInteractable);
 	
-	
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
