@@ -21,7 +21,7 @@ void ASuspector::BeginPlay()
    const UCPP_HeliconGameInstance* GameInstance = Cast<UCPP_HeliconGameInstance>(GetWorld()->GetGameInstance());
   
    BindEvents(GameInstance);
-   
+   StartingLocation = GetActorLocation();
    
 }
 
@@ -39,10 +39,19 @@ void ASuspector::OnConstruction(const FTransform& Transform)
 void ASuspector::Tick(float DeltaTime)
 {
    Super::Tick(DeltaTime);
+   if (StartingLocation != GetActorLocation())
+   {
+      
+   }
 }
 
 void ASuspector::ExecuteSuspectBehaviour(FEventTagsStruct TagsStruct)
 {
+   if (bUsePhysics)
+   {
+      return;
+   }
+   
    ESuspectBehaviour Behaviour = RandomBehaviour();
    switch (Behaviour)
    {

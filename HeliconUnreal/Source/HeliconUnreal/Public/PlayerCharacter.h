@@ -55,9 +55,11 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
+	UFUNCTION(BlueprintCallable)
 	void DoInteract();
-	void SetCurrentInteractable(AActor* NewInteractable);
 	
+	UFUNCTION(BlueprintCallable)
+	void SetCurrentInteractable(AActor* NewInteractable);
 	
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
