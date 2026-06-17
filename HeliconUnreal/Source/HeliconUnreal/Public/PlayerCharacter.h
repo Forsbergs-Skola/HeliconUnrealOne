@@ -55,7 +55,10 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
+	UFUNCTION(BlueprintCallable)
 	void DoInteract();
+	
+	UFUNCTION(BlueprintCallable)
 	void SetCurrentInteractable(AActor* NewInteractable);
 	
 	

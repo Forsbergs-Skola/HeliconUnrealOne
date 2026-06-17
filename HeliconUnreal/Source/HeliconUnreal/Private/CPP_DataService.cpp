@@ -62,6 +62,29 @@ void UCPP_DataService::SetSlidingPuzzleIsSolved(bool value)
 	
 }
 
+void UCPP_DataService::AddItemToInventory(FInventoryItemStruct ItemStruct)
+{
+	for (FInventoryItemStruct item : InventoryItems)
+	{
+		if (item.Name == ItemStruct.Name)
+		{
+			return;
+		}
+	}
+	InventoryItems.Add(ItemStruct);
+	
+	UCPP_HeliconGameInstance* GI = Cast<UCPP_HeliconGameInstance>(GetWorld()->GetGameInstance());
+	if (GI)
+	{
+		FEventTagsStruct TS;
+		TArray<FName> _TagsList;
+		_TagsList.Add("INVENTORY");
+		TS.TagsList = _TagsList;
+		GI->EventRelay->NotifyGameDataUpdated(TS);
+	}
+	
+}
+
 void UCPP_DataService::SayHello()
 {
 	UE_LOG(LogTemp, Log, TEXT("Hello data service!"));
