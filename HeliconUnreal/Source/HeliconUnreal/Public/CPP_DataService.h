@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
+#include "InventoryItemStruct.h"
 #include "CPP_DataService.generated.h"
 
 // Every game datum managed by this service must have the following:
@@ -31,6 +32,11 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bSlidingPuzzleIsSolved;
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<FInventoryItemStruct> InventoryItems;
+	
+	
+	
 	UFUNCTION(BlueprintCallable)
 	void SetSecondsPlayed(int value);
 	
@@ -39,6 +45,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void SetSlidingPuzzleIsSolved(bool value);
+	
+	UFUNCTION(BlueprintCallable)
+	void AddItemToInventory(FInventoryItemStruct ItemStruct);
 	
 	
 	
