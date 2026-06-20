@@ -1,9 +1,11 @@
-﻿#pragma once
+﻿//Source/HeliconUnreal/Public/DialogueConvoStruct.h
+
+#pragma once
 
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
 #include "EventTagsStruct.h"
-//#include "Fonts/SlateFontInfo.h"
+#include "Fonts/SlateFontInfo.h"
 #include "DialogueConvoStruct.generated.h"
 
 USTRUCT(BlueprintType)
@@ -24,10 +26,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FEventTagsStruct ConvoEndedTags;
 	
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Appearance")
-	//FSlateFontInfo SpeakerNameFontInfo;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Appearance")
+	FSlateFontInfo SpeakerNameFontInfo;
+	// ^^ this UPROPERTY causes build errors. If I comment it out, the solution  
 	
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Appearance")
-	//FSlateFontInfo DialogueTextFontInfo;
 	
 };

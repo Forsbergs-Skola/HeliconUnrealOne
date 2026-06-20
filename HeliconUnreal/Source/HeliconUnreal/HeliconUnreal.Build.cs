@@ -22,7 +22,11 @@ public class HeliconUnreal : ModuleRules
 			"Niagara"
 		});
 
-		PrivateDependencyModuleNames.AddRange(new string[] { });
+		PrivateDependencyModuleNames.AddRange(new string[]
+		{
+			"Slate",
+			"SlateCore",
+		});
 
 		PublicIncludePaths.AddRange(new string[] {
 			"HeliconUnreal",
