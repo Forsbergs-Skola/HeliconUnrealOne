@@ -28,7 +28,29 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Appearance")
 	FSlateFontInfo SpeakerNameFontInfo;
-	// ^^ this UPROPERTY causes build errors. If I comment it out, the solution  
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Appearance")
+	FSlateColor SpeakerNameColor;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Appearance")
+	FSlateFontInfo LineTextFontInfo;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Appearance")
+	FSlateColor LineTextColor;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Appearance")
+	FSlateFontInfo ChoiceTextFontInfo;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Appearance")
+	FSlateColor ChoiceTextColor;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Appearance")
+	FSlateFontInfo NextButtonTextFontInfo;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Appearance")
+	FSlateColor NextButtonTextColor;
+	
+	
 	
 	
 };
