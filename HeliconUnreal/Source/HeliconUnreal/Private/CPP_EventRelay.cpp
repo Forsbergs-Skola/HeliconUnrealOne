@@ -66,3 +66,8 @@ void UCPP_EventRelay::NotifySlidingPuzzleSolved(FEventTagsStruct TagsStruct)
 {
 	OnSlidingPuzzleSolved.Broadcast(TagsStruct);
 }
+
+void UCPP_EventRelay::NotifyPausePressed()
+{
+	OnPausePressed.Broadcast();
+}
