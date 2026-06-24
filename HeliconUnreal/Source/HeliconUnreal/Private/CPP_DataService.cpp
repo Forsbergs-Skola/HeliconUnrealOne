@@ -85,6 +85,43 @@ void UCPP_DataService::AddItemToInventory(FInventoryItemStruct ItemStruct)
 	
 }
 
+void UCPP_DataService::SetCrosshairVisible(bool value)
+{
+	if (value == bCrosshairVisible)
+	{
+		return;
+	}
+	bCrosshairVisible = value;
+	
+	UCPP_HeliconGameInstance* GI = Cast<UCPP_HeliconGameInstance>(GetWorld()->GetGameInstance());
+	
+	if (GI)
+	{
+		if (bCrosshairVisible)
+		{
+			FEventTagsStruct TagStruct;
+			TArray<FName> _TagsList;
+			_TagsList.Add("SHOW_CROSSHAIR");
+			TagStruct.TagsList = _TagsList;
+		
+			GI->EventRelay->NotifyGameDataUpdated(TagStruct);
+			return;
+		}
+		else
+		{
+			FEventTagsStruct TagStruct;
+			TArray<FName> _TagsList;
+			_TagsList.Add("HIDE_CROSSHAIR");
+			TagStruct.TagsList = _TagsList;
+		
+			GI->EventRelay->NotifyGameDataUpdated(TagStruct);
+			return;
+		}
+		
+		
+	}
+}
+
 void UCPP_DataService::SayHello()
 {
 	UE_LOG(LogTemp, Log, TEXT("Hello data service!"));

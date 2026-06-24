@@ -35,7 +35,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TArray<FInventoryItemStruct> InventoryItems;
 	
-	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bCrosshairVisible;
 	
 	UFUNCTION(BlueprintCallable)
 	void SetSecondsPlayed(int value);
@@ -49,7 +50,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void AddItemToInventory(FInventoryItemStruct ItemStruct);
 	
-	
+	UFUNCTION(BlueprintCallable)
+	void SetCrosshairVisible(bool value);
 	
 	UFUNCTION(BlueprintCallable)
 	void SayHello();
