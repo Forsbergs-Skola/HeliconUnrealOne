@@ -22,13 +22,16 @@ public:
 	ABoardPuzzleLink();
 
 	UFUNCTION(BlueprintCallable)
-	void SetIsLinked(bool value);
+	void SetIsUnlocked(bool value);
 	
 	UFUNCTION(BlueprintCallable)
-	bool GetIsLinked() const;
+	bool GetIsUnlocked() const;
 	
 	UFUNCTION(BlueprintCallable)
 	void ChangeMaterial(ELinkStatus LinkStatus);
+	
+	UFUNCTION(BlueprintCallable)
+	FText& GetID();
 	
 protected:
 	virtual void BeginPlay() override;
@@ -37,7 +40,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Node")
-	bool bIsLinked;
+	bool bIsUnlocked;
 	
 	UPROPERTY(EditAnywhere, Category = "Link|Visual")
 	UMaterialInterface* LinkedMaterial;
@@ -47,4 +50,7 @@ public:
 	
 	UPROPERTY(EditAnywhere, Category = "Link|Visual")
 	TObjectPtr<UStaticMeshComponent> LinkMesh;
+	
+	UPROPERTY(EditAnywhere, Category = "Link|Visual")
+	FText LinkID;
 };

@@ -17,6 +17,11 @@ void ABoardPuzzleLink::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("No NonLinked Material!"));
 	}
 	LinkMesh->SetMaterial(0, NonLinkedMaterial);
+	
+	if (LinkID.IsEmpty())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No Link ID!"));
+	}
 }
 
 void ABoardPuzzleLink::Tick(float DeltaTime)
@@ -24,10 +29,10 @@ void ABoardPuzzleLink::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ABoardPuzzleLink::SetIsLinked(bool value)
+void ABoardPuzzleLink::SetIsUnlocked(bool value)
 {
-	if (value == bIsLinked) { return; }
-	bIsLinked = value;
+	if (value == bIsUnlocked) { return; }
+	bIsUnlocked = value;
 	
 	if (value)
 	{
@@ -42,9 +47,9 @@ void ABoardPuzzleLink::SetIsLinked(bool value)
 	
 }
 
-bool ABoardPuzzleLink::GetIsLinked() const
+bool ABoardPuzzleLink::GetIsUnlocked() const
 {
-	return bIsLinked;
+	return bIsUnlocked;
 }
 
 void ABoardPuzzleLink::ChangeMaterial(ELinkStatus LinkStatus)
@@ -58,7 +63,12 @@ void ABoardPuzzleLink::ChangeMaterial(ELinkStatus LinkStatus)
 	{
 		case ELinkStatus::NotLinked: LinkMesh->SetMaterial(0, NonLinkedMaterial); break;
 		case ELinkStatus::Linked: LinkMesh->SetMaterial(0, LinkedMaterial); break;
-	}
+	}	
+}
+
+FText& ABoardPuzzleLink::GetID()
+{
+	return LinkID;
 }
 
 

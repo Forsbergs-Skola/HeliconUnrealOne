@@ -12,15 +12,41 @@ class HELICONUNREAL_API ABoardPuzzleBoard : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	ABoardPuzzleBoard();
-
+	
+	UFUNCTION(BlueprintCallable)
+	TArray<FText>& GetCorrectLinkCompletionOrder();
+	
+	UFUNCTION(BlueprintCallable)
+	TArray<FText>& GetCompletedNodes();
+	
+	UFUNCTION(BlueprintCallable)
+	void AddCompletedLinks(const FText ID);
+	
+	UFUNCTION(BlueprintCallable)
+	bool HasCompletedCorrectly();
+	
+	UFUNCTION(BlueprintCallable)
+	FText& ID() { return BoardID; }
+	
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Board)
+	TObjectPtr<UStaticMeshComponent> BoardMesh;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Board)
+	FText BoardID;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Board)
+	UMaterialInterface* BoardMaterial;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Board)
+	TArray<FText> CorrectLinkCompletionOrder;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Board)
+	TArray<FText> CompletedLinks;
 };

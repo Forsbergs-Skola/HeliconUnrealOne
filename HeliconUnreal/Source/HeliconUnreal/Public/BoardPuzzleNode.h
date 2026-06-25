@@ -5,47 +5,68 @@
 #include "BoardPuzzleNode.generated.h"
 
 class ABoardPuzzleLink;
+class ABoardPuzzleBoard;
 
 UCLASS()
 class HELICONUNREAL_API ABoardPuzzleNode : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+    
+public: 
 	ABoardPuzzleNode();
+	
+	UFUNCTION()
+	bool CheckCompletion();
+	
+	UFUNCTION()
+	void NotifyCompletion();
+	
+	UFUNCTION()
+	void UpdateBoard();
+	
+	UFUNCTION()
+	void HandleEndingNode();
+	
+	UFUNCTION()
+	void HandleNormalNode();
 
 protected:
 	virtual void BeginPlay() override;
 
-public:	
+public: 
 	virtual void Tick(float DeltaTime) override;
-	
+    
 	UFUNCTION(BlueprintCallable)
-	void OnNodeHoverBegin(UPrimitiveComponent* TouchedComponent);
-
-	UFUNCTION(BlueprintCallable)
-	void OnNodeHoverEnd(UPrimitiveComponent* TouchedComponent);
+	void OnNodeClicked(UPrimitiveComponent* ClickedComp, FKey ButtonPressed);
 	
-	UFUNCTION(BlueprintCallable)
-	void OnHoverTimerComplete() const;
-	
-	FTimerHandle HoverTimerHandle;
-	
-	UPROPERTY(EditAnywhere, Category = "Node")
-	float RequiredHoverTime = 3.0f;	
-	
+	void UnlockLink();
+    
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Node")
 	TObjectPtr<ABoardPuzzleLink> OwnedLink;
-	
+    
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Node")
-	TObjectPtr<ABoardPuzzleLink> ConnectedLink;
-	
+	TArray<TObjectPtr<ABoardPuzzleLink>> ConnectedLinks;
+    
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Node")
 	bool bIsStartingNode;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Node")
+	bool bIsEndingNode;
+    
 	UPROPERTY(EditAnywhere, Category = "Node|Visual")
 	TObjectPtr<UStaticMeshComponent> NodeMesh;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Link|Visual")
+	UPROPERTY(EditAnywhere, Category = "Node")
+	TObjectPtr<class USphereComponent> ClickSphere;
+    
+	UPROPERTY(EditAnywhere, Category = "Node|Visual")
 	UMaterialInterface* NodeMaterial;
+	
+	UPROPERTY(EditAnywhere, Category = "Node|Visual")
+	UMaterialInterface* EndingNodeMaterial;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Node")
+	TObjectPtr<ABoardPuzzleBoard> Board;
+	
+    
 };
