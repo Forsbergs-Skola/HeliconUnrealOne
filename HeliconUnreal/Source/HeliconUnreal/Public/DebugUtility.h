@@ -20,7 +20,7 @@ public:
 	 * Draws a debug line, Arguments after End are forwarded to DrawDebugLine(). 
 	 */
 	template<typename... Args>
-	static void QuickLine(UWorld* World, const FVector& Start, const FVector& End, Args&&... args)
+	static auto QuickLine(UWorld* World, const FVector& Start, const FVector& End, Args&&... args) -> void
 	{
 #if WITH_EDITOR
 		if (World)
@@ -33,7 +33,7 @@ public:
 	 * Prints a formatted string both to the screen and output log
 	 */
 	template<typename... Args>
-	static void ScreenMessage(const float DisplayTime, const FColor& Color, const FString& Format, Args&&... args)
+	static auto ScreenMessage(const float DisplayTime, const FColor& Color, const FString& Format, Args&&... args) -> void
 	{
 		if constexpr (!UE_BUILD_SHIPPING)
 		{
@@ -54,7 +54,7 @@ public:
 	}
 	
 	template<typename T>
-	static FORCEINLINE FString ToLogString(const T& Value)
+	static FORCEINLINE auto ToLogString(const T& Value) -> FString
 	{
 		if constexpr (std::is_same_v<std::decay_t<T>, FText>)
 		{
