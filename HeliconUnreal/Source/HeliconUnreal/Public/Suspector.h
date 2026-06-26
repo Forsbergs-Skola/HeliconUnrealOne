@@ -83,9 +83,6 @@ private:
    void BindEvents(const UCPP_HeliconGameInstance* GameInstance);
    
    UFUNCTION()
-   void AddDebugMsg(const FString& Msg);
-   
-   UFUNCTION()
    ESuspectBehaviour RandomBehaviour();
   
    int CurrentTargetPointIndex = 0;

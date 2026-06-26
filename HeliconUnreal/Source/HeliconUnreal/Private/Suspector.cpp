@@ -57,19 +57,15 @@ void ASuspector::ExecuteSuspectBehaviour(FEventTagsStruct TagsStruct)
    {
    case ESuspectBehaviour::MoveRandom:
       OnMoveRandom();
-      AddDebugMsg("Suspector Executing Move Random");
       break;
    case ESuspectBehaviour::RotateRandom:
       OnRotateRandom();
-      AddDebugMsg("Suspector Executing Rotate Random");
       break;
    case ESuspectBehaviour::MoveToPoint:
       OnMoveToPoint();
-      AddDebugMsg("Suspector Executing Move ToPoint");
       break;
    default:
       OnMoveRandom();
-      AddDebugMsg("Defaulted to Move Random");
    }
 }
 
@@ -132,14 +128,4 @@ ESuspectBehaviour ASuspector::RandomBehaviour()
    if (Result <= 50 && Result > 0) return ESuspectBehaviour::MoveRandom;
    if (Result <= 100 && Result > 50) return ESuspectBehaviour::RotateRandom;
    return ESuspectBehaviour::MoveRandom;
-}
-
-// Refactor 
-// Change to UE_LOG when system is stable 
-void ASuspector::AddDebugMsg(const FString& Msg)
-{
-   if (GEngine)
-   {
-      GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, Msg);
-   }
 }
