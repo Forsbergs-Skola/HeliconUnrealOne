@@ -36,6 +36,8 @@ void APlayerCharacter::BeginPlay()
 	{
 		return;
 	}
+
+	PlayerController->bEnableClickEvents = true;
     
 	ULocalPlayer* LocalPlayer = PlayerController->GetLocalPlayer();
 	if (!LocalPlayer)
@@ -54,7 +56,6 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void APlayerCharacter::OnMove(const FInputActionValue& Value)
