@@ -1,85 +1,157 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "GullActor.h"
+#include "ADockLightTemplate.h"
+#include "DocksPuzzleManager.h"
+#include "AGullRestPoint.h"
 
-// Sets default values
 AGullActor::AGullActor()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-	State = EGullState::Idle;
-	bHasLockedTarget = false;
 }
 
-// Called when the game starts or when spawned
-void AGullActor::BeginPlay()
+AADockLightTemplate* AGullActor::FindBestTarget(const TArray<AADockLightTemplate*>& Lights) const
 {
-	Super::BeginPlay();
-	
-}
-
-AADockLightTemplate* AGullActor::FindClosestLitLight(
-	const TArray<AADockLightTemplate*>& Lights)
-{
-	AADockLightTemplate* BestLight = nullptr;
-	float BestDistance = TNumericLimits<float>::Max();
+	AADockLightTemplate* BestDecoy = nullptr;
+	int32 BestDecoyOrder = MAX_int32;
 
 	for (AADockLightTemplate* Light : Lights)
 	{
-		if (!Light)
+		if (!Light || !Light->bIsLit || !Light->bIsDecoy)
 		{
 			continue;
 		}
 
-		if (!Light->bIsLit)
+		if (BestDecoy == nullptr || Light->ActivationOrder < BestDecoyOrder)
 		{
-			continue;
+			BestDecoy = Light;
+			BestDecoyOrder = Light->ActivationOrder;
 		}
-
-		float Distance =
-			FVector::Dist(
-				GetActorLocation(),
-				Light->GetActorLocation());
-
-		if (Distance < BestDistance)
-		{
-			BestDistance = Distance;
-			BestLight = Light;
-		}
-
-		UE_LOG(LogTemp, Warning, TEXT("Checking %s, bIsLit=%s"),
-		*Light->GetName(),
-		Light->bIsLit ? TEXT("TRUE") : TEXT("FALSE"));
 	}
-	
 
-	return BestLight;
+	if (BestDecoy)
+	{
+		return BestDecoy;
+	}
+
+	AADockLightTemplate* BestNormal = nullptr;
+	int32 BestNormalOrder = MAX_int32;
+
+	for (AADockLightTemplate* Light : Lights)
+	{
+		if (!Light || !Light->bIsLit || Light->bIsDecoy)
+		{
+			continue;
+		}
+
+		if (BestNormal == nullptr || Light->ActivationOrder < BestNormalOrder)
+		{
+			BestNormal = Light;
+			BestNormalOrder = Light->ActivationOrder;
+		}
+	}
+
+	return BestNormal;
 }
 
-void AGullActor::StartTurn(
-	const TArray<AADockLightTemplate*>& Lights)
+bool AGullActor::StartTurn(
+	const TArray<AADockLightTemplate*>& Lights,
+	ADocksPuzzleManager* InPuzzleManager,
+	const TArray<AGullRestPoint*>& RestPoints)
 {
-	if (bHasLockedTarget)
+	PuzzleManager = InPuzzleManager;
+
+	AADockLightTemplate* BestTarget = FindBestTarget(Lights);
+	if (!BestTarget)
 	{
-		return;
+		return false;
 	}
 
-	AADockLightTemplate* ClosestLight =
-		FindClosestLitLight(Lights);
+	const bool bResumingFromRest = (State == EGullState::WaitingAtRestPoint);
 
-	if (ClosestLight)
+	if (bResumingFromRest)
 	{
-		SetTarget(ClosestLight);
-
-		UE_LOG(LogTemp, Warning,
-			TEXT("Gull locked target: %s"),
-			*ClosestLight->GetName());
+		NextTarget = BestTarget;
+		SetTarget(NextTarget);
+		return true;
 	}
+
+	LockedTarget = nullptr;
+	CurrentWaypoint = nullptr;
+	NextTarget = nullptr;
+	SwarmTimer = 0.f;
+	State = EGullState::Idle;
+
+	NextTarget = BestTarget;
+
+	if (AGullRestPoint* StartPoint = FindBlockingRestPoint(BestTarget->GetActorLocation(), RestPoints))
+	{
+		SetWaypoint(StartPoint);
+	}
+	else
+	{
+		SetTarget(BestTarget);
+	}
+
+	return true;
 }
 
-// Called every frame
+void AGullActor::ResetForPuzzle()
+{
+	LockedTarget = nullptr;
+	NextTarget = nullptr;
+	CurrentWaypoint = nullptr;
+	PuzzleManager = nullptr;
+	SwarmTimer = 0.f;
+	State = EGullState::Idle;
+}
+
+void AGullActor::SetWaypoint(AActor* NewWaypoint)
+{
+	CurrentWaypoint = NewWaypoint;
+	State = EGullState::MovingToTarget;
+}
+
+AGullRestPoint* AGullActor::FindBlockingRestPoint(
+	const FVector& Destination,
+	const TArray<AGullRestPoint*>& RestPoints) const
+{
+	const FVector Start = GetActorLocation();
+	const FVector LineDir = Destination - Start;
+	const float LineLengthSq = LineDir.SizeSquared();
+
+	AGullRestPoint* Best = nullptr;
+	float BestDist = TNumericLimits<float>::Max();
+
+	for (AGullRestPoint* RestPoint : RestPoints)
+	{
+		if (!RestPoint)
+		{
+			continue;
+		}
+
+		const FVector ToPoint = RestPoint->GetActorLocation() - Start;
+
+		const float T = LineLengthSq > 0.f
+			? FVector::DotProduct(ToPoint, LineDir) / LineLengthSq
+			: 0.f;
+
+		if (T <= 0.f || T >= 1.f)
+		{
+			continue;
+		}
+
+		const FVector ClosestPointOnLine = Start + LineDir * T;
+		const float DistFromLine = FVector::Dist(RestPoint->GetActorLocation(), ClosestPointOnLine);
+
+		if (DistFromLine <= RestPoint->GetBlockingRadius() && DistFromLine < BestDist)
+		{
+			BestDist = DistFromLine;
+			Best = RestPoint;
+		}
+	}
+
+	return Best;
+}
+
 void AGullActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -87,32 +159,90 @@ void AGullActor::Tick(float DeltaTime)
 	switch (State)
 	{
 	case EGullState::Idle:
+	case EGullState::WaitingAtRestPoint:
 		break;
 
 	case EGullState::MovingToTarget:
 		{
-			if (!LockedTarget) return;
+			AActor* Target = CurrentWaypoint ? CurrentWaypoint.Get() : LockedTarget.Get();
 
-			FVector Dir = (LockedTarget->GetActorLocation() - GetActorLocation()).GetSafeNormal();
-			SetActorLocation(GetActorLocation() + Dir * MoveSpeed * DeltaTime);
+			if (!Target)
+			{
+				FinishTurn();
+				return;
+			}
 
+			const FVector TargetLocation = Target->GetActorLocation();
+			const float Distance = FVector::Dist(GetActorLocation(), TargetLocation);
+
+			if (Distance <= ArrivalDistance)
+			{
+				if (CurrentWaypoint)
+				{
+					CurrentWaypoint = nullptr;
+					State = EGullState::WaitingAtRestPoint;
+
+					if (PuzzleManager)
+					{
+						PuzzleManager->NotifyGullTurnStepComplete(this);
+					}
+
+					return;
+				}
+
+				EnterSwarming();
+				return;
+			}
+
+			const FVector NewLocation = FMath::VInterpConstantTo(
+				GetActorLocation(),
+				TargetLocation,
+				DeltaTime,
+				MoveSpeed);
+
+			SetActorLocation(NewLocation);
 			break;
 		}
 
 	case EGullState::Swarming:
-		// later
+		SwarmTimer += DeltaTime;
+
+		if (SwarmTimer >= SwarmDuration)
+		{
+			FinishTurn();
+		}
 		break;
 	}
-
 }
 
 void AGullActor::SetTarget(AActor* NewTarget)
 {
-	if (bHasLockedTarget)
-		return;
-
 	LockedTarget = NewTarget;
-	bHasLockedTarget = true;
+	CurrentWaypoint = nullptr;
 	State = EGullState::MovingToTarget;
 }
 
+void AGullActor::EnterSwarming()
+{
+	State = EGullState::Swarming;
+	SwarmTimer = 0.f;
+}
+
+void AGullActor::FinishTurn()
+{
+	if (AADockLightTemplate* LightTarget = Cast<AADockLightTemplate>(LockedTarget))
+	{
+		LightTarget->LightOff();
+	}
+
+	LockedTarget = nullptr;
+	NextTarget = nullptr;
+	CurrentWaypoint = nullptr;
+	SwarmTimer = 0.f;
+	State = EGullState::Idle;
+
+	if (PuzzleManager)
+	{
+		PuzzleManager->NotifyGullTurnStepComplete(this);
+	}
+}
