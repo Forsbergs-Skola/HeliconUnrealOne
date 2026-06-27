@@ -4,11 +4,11 @@
 
 This project uses a lightweight event system to decouple gameplay “services” (systems that *produce* updates) from gameplay actors/components/UI (systems that *react* to updates). Rather than having every consumer keep direct references to every producer—or constantly polling—services broadcast events through a shared relay object.
 
-The result is a **publish/subscribe (pub-sub)** style architecture:
+The result is a **content-based publish/subscribe (pub-sub)** style architecture:
 
 - **Publishers** (e.g., `CPP_DataService`, `CPP_DialogueService`) broadcast events when something meaningful happens.
 - **Subscribers** (any C++ class or Blueprint) register callbacks to be notified.
-- **Event payloads** can include **event tags**—an arbitrary array of `FName` values that act like hashtags/Steam tags—so listeners can quickly filter what they care about without needing separate event types for every variation.
+- **Event payloads** can include **event tags**—an arbitrary array of `FName` values that act as metadata tags so listeners can quickly filter what they care about without needing separate event types for every variation.
 
 This document describes the design patterns in use, typical usage, and the purpose of event tags.
 
@@ -33,19 +33,14 @@ This document describes the design patterns in use, typical usage, and the purpo
 
 ## What Problem This Solves
 
-In an introductory Unreal project, it’s very common to start with tightly coupled logic:
+A naive event implementation -- characterized by direct calls into game systems from the UI, hard references between game actors, or continuous polling -- would introduce a number of problems:
 
-- UI widgets directly call into game systems
-- Actors keep hard references to other actors/services
-- Systems poll each other each tick (“did something change yet?”)
-
-That approach works for very small prototypes, but tends to produce:
 - **High coupling** (changing one system forces changes in many others)
 - **Hard-to-follow dependencies**
 - **Spaghetti event flow** (everything calls everything)
 - **Inflexible reuse** (systems are not portable between levels/projects)
 
-This event system improves that by:
+Our event relay solition improves that by:
 - letting services broadcast *facts* (“something changed”, “a line was written”)  
 - letting listeners decide *what to do* (update UI, play audio, trigger VFX, etc.)
 
@@ -67,8 +62,6 @@ Rather than each service exposing many delegates and requiring everyone to refer
 - A single place to subscribe/unsubscribe
 - A single place to broadcast events
 - Reduces “everyone depends on everyone” relationships
-
-This is often called an **Event Aggregator** or **Event Bus**.
 
 ### 3) Service Locator (GameInstance as Access Point)
 Listeners commonly obtain the relevant service through the GameInstance (or a subsystem-like pattern). This is effectively a **Service Locator**:
@@ -110,11 +103,6 @@ A single event like `OnGameDataUpdated` can represent many kinds of changes. If 
 - …
 
 Instead, this system allows attaching **tags**: an array of `FName` values carrying arbitrary metadata.
-
-Think of tags like:
-- hashtags on social media
-- Steam store tags
-- labels on a message
 
 ### How Tags Work
 A publisher broadcasts an event and includes a tag list like:
@@ -203,29 +191,6 @@ without any of those systems being hardwired into DialogueService.
 
 ---
 
-## Why an Event Relay Instead of Direct Delegates on Each Service?
-
-Unreal supports direct delegates on a service class, and that can be fine. The relay approach provides a teaching-friendly middle ground:
-
-**Benefits**
-- **Centralized subscription management**  
-  Easier to find “what listens to what” by searching for relay subscriptions.
-- **Reduced dependency graph**  
-  Subscribers can listen without needing strong references to each service instance.
-- **Easier to add new listeners**  
-  Add a new system (e.g., an `AudioService`) that listens to existing events without modifying the publisher.
-- **Supports “meta-events”**  
-  Tag filtering becomes a natural extension.
-
-**Tradeoffs**
-- **Harder to trace at runtime** compared to direct method calls (events are indirect)
-- Must be disciplined about:
-  - unsubscribing when objects are destroyed
-  - avoiding broadcasting too frequently (event spam)
-  - choosing clear tag conventions
-
----
-
 ## Recommended Usage Patterns
 
 ### 1) Subscribe in BeginPlay / Initialize, Unsubscribe in EndPlay / Deinitialize
@@ -302,7 +267,7 @@ void UAudioService::OnDialogueLineWritten(const FEventTags& Tags /*, maybe line 
 
 ## Summary
 
-This event system provides a clean, introductory-friendly way to structure Unreal gameplay code around:
+This event system provides a clean, readable way to structure Unreal gameplay code around:
 - **services** that own state and emit events
 - **listeners** that react without direct dependencies
 - **event tags** that add flexible metadata without exploding the number of event types
