@@ -1,4 +1,4 @@
-# Helicon Unreal — Event System (First Draft)
+# Helicon Unreal — Event System
 
 ## Overview
 
@@ -8,7 +8,7 @@ The result is a **content-based publish/subscribe (pub-sub)** style architecture
 
 - **Publishers** (e.g., `CPP_DataService`, `CPP_DialogueService`) broadcast events when something meaningful happens.
 - **Subscribers** (any C++ class or Blueprint) register callbacks to be notified.
-- **Event payloads** can include **event tags**—an arbitrary array of `FName` values that act as metadata tags so listeners can quickly filter what they care about without needing separate event types for every variation.
+- **Event payloads** can be empty or include **event tags**—an arbitrary array of `FName` values that act as metadata tags so listeners can quickly filter what they care about without needing separate event types for every variation.
 
 This document describes the design patterns in use, typical usage, and the purpose of event tags.
 
@@ -20,13 +20,15 @@ This document describes the design patterns in use, typical usage, and the purpo
 - `Source/HeliconUnreal/Private/CPP_EventRelay.cpp`  
   Defines the central relay / aggregator used to register listeners and broadcast events.
 
-- `Source/HeliconUnreal/Public/CPP_DialogueService.h` and `.cpp`  
+- `Source/HeliconUnreal/Public/CPP_DialogueService.h`
+- `Source/HeliconUnreal/Private/CPP_DialogueService.cpp`  
   Demonstrates “gameplay narrative” events such as conversation start/end, line written, and choice taken.
 
-- `Source/HeliconUnreal/Public/CPP_DataService.h` and `.cpp`  
+- `Source/HeliconUnreal/Public/CPP_DataService.h`
+- `Source/HeliconUnreal/Private/CPP_DataService.cpp`  
   Demonstrates “state/data” events such as “game data updated”.
 
-- `EventTagsStruct.h`  
+- `Source/HeliconUnreal/Public/EventTagsStruct.h`  
   Defines the event tag payload structure that can be attached to events.
 
 ---
@@ -41,8 +43,8 @@ A naive event implementation -- characterized by direct calls into game systems 
 - **Inflexible reuse** (systems are not portable between levels/projects)
 
 Our event relay solition improves that by:
-- letting services broadcast *facts* (“something changed”, “a line was written”)  
-- letting listeners decide *what to do* (update UI, play audio, trigger VFX, etc.)
+- letting services broadcast *facts* (“something changed”, “a line was written”, "a dialogue has begun")  
+- letting listeners decide *what to do* (update UI, play audio, trigger VFX, etc.) based on the content of payloaded event tags
 
 ---
 
@@ -63,12 +65,10 @@ Rather than each service exposing many delegates and requiring everyone to refer
 - A single place to broadcast events
 - Reduces “everyone depends on everyone” relationships
 
-### 3) Service Locator (GameInstance as Access Point)
+### 3) Service Locator ( [GameInstance as Access Point](./game_instance_as_singleton.md) )
 Listeners commonly obtain the relevant service through the GameInstance (or a subsystem-like pattern). This is effectively a **Service Locator**:
 
 - “When I get the event, I fetch the `DataService` from the GameInstance and refresh my state.”
-
-This can be a pragmatic choice for small projects and teaching units because it keeps setup simple and avoids introducing a full dependency injection framework.
 
 ---
 
@@ -81,7 +81,7 @@ A recurring design choice in this project is that many events are “edge trigge
 
 Example:
 - `OnGameDataUpdated` fires
-- A UI widget receives it
+- A UI widget receives it, and checks the payloaded tags for relevance or interest
 - The UI widget queries `DataService` for the values it displays
 
 Benefits:
@@ -100,8 +100,7 @@ A single event like `OnGameDataUpdated` can represent many kinds of changes. If 
 - `OnHealthChanged`
 - `OnQuestStateChanged`
 - `OnCurrencyChanged`
-- …
-
+- and so on...
 Instead, this system allows attaching **tags**: an array of `FName` values carrying arbitrary metadata.
 
 ### How Tags Work
@@ -135,8 +134,8 @@ When a dialogue line is written, the dialogue service can include a `"LAUGH"` ta
 
 No direct dependency between dialogue and audio is required.
 
-### Suggested Tag Conventions (Project-Level)
-To keep tags maintainable, it helps to adopt conventions:
+### Tag Conventions (Project-Level)
+To keep tags maintainable, we adopt some conventions:
 
 - Use **UPPER_SNAKE_CASE** for tags (`"LAUGH"`, `"INVENTORY"`)
 - Prefer a small “namespace-like” first tag:
@@ -144,7 +143,7 @@ To keep tags maintainable, it helps to adopt conventions:
 - Optionally include action tags:
   - `"UPDATED"`, `"STARTED"`, `"ENDED"`, `"CHOICE_TAKEN"`
 
-The project can remain flexible (tags are “arbitrary”), while still readable.
+The project can remain flexible (tags are arbitrary), while still readable.
 
 ---
 
@@ -161,7 +160,7 @@ Conceptual flow:
 1. Some gameplay code updates data via `DataService`
 2. `DataService` modifies internal data
 3. `DataService` broadcasts `OnGameDataUpdated(tags)`
-4. UI/actors receive it and pull updated values from `DataService`
+4. UI/actors receive it, check the tags for relevance, and pull updated values from `DataService`
 
 This means:
 - DataService does **not** need references to every widget/actor that displays data
@@ -178,7 +177,7 @@ Typical responsibilities:
 
 Conceptual flow:
 
-1. Dialogue begins → broadcast “ConversationStarted”
+1. Dialogue begins → broadcast “ConversationStarted” (optionally payloaded with a tag like "SISTER_INTRO", etc.)
 2. Each time a line is produced → broadcast “LineWritten” (with tags like `"LAUGH"`, `"ANGRY"`, etc.)
 3. Player chooses a response → broadcast “ChoiceTaken”
 4. Dialogue ends → broadcast “ConversationEnded”
@@ -197,8 +196,6 @@ without any of those systems being hardwired into DialogueService.
 To prevent calling into destroyed objects:
 - Bind when the object becomes valid
 - Unbind when it is being torn down
-
-(Exact API depends on `CPP_EventRelay` implementation.)
 
 ### 2) Keep Event Callbacks Lightweight
 Callbacks should typically:
@@ -222,7 +219,7 @@ For big state (large structs, arrays), prefer fetching from the service after th
 
 ### Subscribing to Data Updates (Listener Side)
 ```cpp
-// Pseudocode only — adjust to actual CPP_EventRelay API
+// Pseudocode
 
 void UInventoryWidget::NativeConstruct()
 {
@@ -240,7 +237,7 @@ void UInventoryWidget::OnGameDataUpdated(const FEventTags& Tags)
 
 ### Broadcasting from DataService (Publisher Side)
 ```cpp
-// Pseudocode only — adjust to actual CPP_EventRelay API
+// Pseudocode
 
 void UCPP_DataService::AddItem(...)
 {
@@ -252,7 +249,7 @@ void UCPP_DataService::AddItem(...)
 
 ### Dialogue “Laugh Track” (Audio Listener)
 ```cpp
-// Pseudocode only — adjust to actual CPP_EventRelay API
+// Pseudocode
 
 void UAudioService::OnDialogueLineWritten(const FEventTags& Tags /*, maybe line info */)
 {
