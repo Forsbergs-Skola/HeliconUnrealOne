@@ -4,7 +4,7 @@
 
 In this project, we implement the **singleton pattern** in Unreal Engine by extending the `UGameInstance` class, through our custom subclass: `UCPP_HeliconGameInstance`. The singleton pattern ensures that certain services and game-wide managers have only one instance during gameplay, accessible from anywhere in the project (across levels, UI, game logic, etc.).
 
-This document details the singleton approach and provides usage examples for both C++ and Blueprints.
+This document details our singleton implementation and provides usage examples for both C++ and Blueprints.
 
 ---
 
@@ -54,35 +54,29 @@ First, get the `UCPP_HeliconGameInstance` from the current world context:
 ```cpp
 #include "CPP_HeliconGameInstance.h"
 
+// Get the game instance and cast it to UCPP_HeliconGameInstance
 UCPP_HeliconGameInstance* GI = Cast<UCPP_HeliconGameInstance>(GetWorld()->GetGameInstance());
-	if (GI)
+	if (GI) // if the cast sucseeds
 	{
 		GI->EventRelay->NotifySomethingHappened();
         // ...
 	}
 	else
+	// a cast failure indicates a likely config problem...
+	// For example, the Game Instance isn't properly set in the project settings
 	{
 		UE_LOG(LogTemp, Error, TEXT("Failed to get and/or cast game instance!"));
 	}
-```
-
-#### Example: Registering a listener with the Event Relay
-
-```cpp
-// ...
 ```
 
 ### Blueprint example: Triggering a conversation with `DialogueService`
 
 #### Step 1: Get Game Instance
 
-...
+(TODO: screenshot)
 
 #### Step 2: Call service getters
 
-...
-
-**Example Blueprint graph:**
 (TODO: screenshot)
 
 ---
@@ -91,13 +85,10 @@ UCPP_HeliconGameInstance* GI = Cast<UCPP_HeliconGameInstance>(GetWorld()->GetGam
 
 #### Step 1: Get Game Instance
 
-...
+(TODO: screenshot)
 
 #### Step 2: Call service getters
 
-...
-
-**Example Blueprint graph:**
 (TODO: screenshot)
 
 ## Summary
@@ -106,12 +97,5 @@ UCPP_HeliconGameInstance* GI = Cast<UCPP_HeliconGameInstance>(GetWorld()->GetGam
 - `UCPP_HeliconGameInstance` owns the singleton services.
 - C++ and Blueprints both access these services via getter functions on the custom GameInstance.
 - This approach is idiomatic in Unreal and simplifies global system management for our game.
-
----
-
-## For More Information
-
-- [Unreal Engine Docs: GameInstance](https://docs.unrealengine.com/5.0/en-US/API/Runtime/Engine/Engine/UGameInstance/)
-- [Unreal Engine Forums: Using GameInstance as a Singleton](https://forums.unrealengine.com/)
 
 ---
