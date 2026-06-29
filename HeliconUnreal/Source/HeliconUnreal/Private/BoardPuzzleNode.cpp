@@ -200,3 +200,24 @@ void ABoardPuzzleNode::HandleNormalNode()
         UpdateBoard();
     }
 }
+
+void ABoardPuzzleNode::Reset()
+{
+    if (OwnedLink)
+    {
+        OwnedLink->SetIsUnlocked(false);
+        
+        if (Board)
+        {
+            Board->RemoveCompletedLink(OwnedLink->GetID());
+        }
+        else
+        {
+            SCREEN_LOG(3, FColor::Red, TEXT("%s: Board pointer is NULL!"), *GetName());
+        }
+    }
+    else
+    {
+        SCREEN_LOG(3, FColor::Red, TEXT("%s was clicked, but its OwnedLink is NULL!"), *GetName());
+    }
+}

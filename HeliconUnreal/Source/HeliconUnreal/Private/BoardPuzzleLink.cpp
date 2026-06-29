@@ -18,7 +18,7 @@ void ABoardPuzzleLink::BeginPlay()
 	}
 	LinkMesh->SetMaterial(0, NonLinkedMaterial);
 	
-	if (LinkID.IsEmpty())
+	if (!LinkID.IsValid())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("No Link ID!"));
 	}
@@ -66,7 +66,7 @@ void ABoardPuzzleLink::ChangeMaterial(ELinkStatus LinkStatus)
 	}	
 }
 
-FText& ABoardPuzzleLink::GetID()
+FName& ABoardPuzzleLink::GetID()
 {
 	return LinkID;
 }
