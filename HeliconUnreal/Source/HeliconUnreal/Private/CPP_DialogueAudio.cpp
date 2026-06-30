@@ -36,15 +36,36 @@ void ACPP_DialogueAudio::HandleOnLineWritten(FEventTagsStruct EventTags)
 	// call the BlueprintImplementableEvent
 	if (EventTags.TagsList.Contains("LONG"))
 	{
-		OnLongLineWritten();
+		if (EventTags.TagsList.Contains("MALE"))
+		{
+			OnMaleLongLineWritten();
+		}
+		else
+		{
+			OnFemaleLongLineWritten();
+		}
 	}
 	else if (EventTags.TagsList.Contains("MEDIUM"))
 	{
-		OnMediumLineWritten();
+		if (EventTags.TagsList.Contains("MALE"))
+		{
+			OnMaleMediumLineWritten();
+		}
+		else
+		{
+			OnFemaleMediumLineWritten();
+		}
 	}
 	else if (EventTags.TagsList.Contains("SHORT"))
 	{
-		OnShortLineWritten();
+		if (EventTags.TagsList.Contains("MALE"))
+		{
+			OnMaleShortLineWritten();
+		}
+		else
+		{
+			OnFemaleShortLineWritten();
+		}
 	}
 }
 

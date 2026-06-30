@@ -30,13 +30,22 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnLongLineWritten();
+	void OnMaleLongLineWritten();
 	
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnMediumLineWritten();
+	void OnMaleMediumLineWritten();
 	
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnShortLineWritten();
+	void OnMaleShortLineWritten();
+	
+	UFUNCTION(BlueprintImplementableEvent)
+    void OnFemaleLongLineWritten();
+    	
+    UFUNCTION(BlueprintImplementableEvent)
+    void OnFemaleMediumLineWritten();
+    	
+    UFUNCTION(BlueprintImplementableEvent)
+    void OnFemaleShortLineWritten();
 
 
 };
