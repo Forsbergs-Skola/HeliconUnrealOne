@@ -52,6 +52,14 @@ public:
 	EGullState State = EGullState::Idle;
 
 protected:
+	virtual void BeginPlay() override;
+
+	UPROPERTY()
+	FVector StartLocation;
+
+	UPROPERTY()
+	FRotator StartRotation;
+
 	UPROPERTY()
 	TObjectPtr<AActor> LockedTarget;
 

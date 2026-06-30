@@ -8,6 +8,14 @@ AGullActor::AGullActor()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
+void AGullActor::BeginPlay()
+{
+	Super::BeginPlay();
+
+	StartLocation = GetActorLocation();
+	StartRotation = GetActorRotation();
+}
+
 AADockLightTemplate* AGullActor::FindBestTarget(const TArray<AADockLightTemplate*>& Lights) const
 {
 	AADockLightTemplate* BestDecoy = nullptr;
@@ -102,6 +110,9 @@ void AGullActor::ResetForPuzzle()
 	PuzzleManager = nullptr;
 	SwarmTimer = 0.f;
 	State = EGullState::Idle;
+
+	SetActorLocation(StartLocation);
+	SetActorRotation(StartRotation);
 }
 
 void AGullActor::SetWaypoint(AActor* NewWaypoint)
