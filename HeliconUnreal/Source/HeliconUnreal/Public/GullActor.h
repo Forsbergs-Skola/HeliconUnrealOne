@@ -1,61 +1,88 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ADockLightTemplate.h"
 #include "GameFramework/Actor.h"
 #include "GullActor.generated.h"
 
-UENUM()
+class AADockLightTemplate;
+class ADocksPuzzleManager;
+class AGullRestPoint;
+
+UENUM(BlueprintType)
 enum class EGullState : uint8
 {
 	Idle,
 	MovingToTarget,
+	WaitingAtRestPoint,
 	Swarming
 };
 
 UCLASS()
-
-
 class HELICONUNREAL_API AGullActor : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
-	// Sets default values for this actor's properties
+
+public:
 	AGullActor();
 
-	UPROPERTY()
-	AActor* LockedTarget;
-
-	UPROPERTY()
-	FVector NestLocation;
-
-	UPROPERTY()
-	bool bHasLockedTarget;
-
-	UPROPERTY()
-	float MoveSpeed = 300.f;
-
-	UFUNCTION()
-	void SetTarget(AActor* NewTarget);
-
-	UPROPERTY(VisibleInstanceOnly)
-	EGullState State;
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-
-public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	AADockLightTemplate* FindClosestLitLight(const TArray<AADockLightTemplate*>& Lights);
+	UFUNCTION(BlueprintCallable, Category="Gull")
+	bool StartTurn(
+		const TArray<AADockLightTemplate*>& Lights,
+		ADocksPuzzleManager* InPuzzleManager,
+		const TArray<AGullRestPoint*>& RestPoints);
 
-	UFUNCTION()
-	void StartTurn(const TArray<AADockLightTemplate*>& Lights);
+	UFUNCTION(BlueprintCallable, Category="Gull")
+	void ResetForPuzzle();
 
+	UFUNCTION(BlueprintPure, Category="Gull")
+	EGullState GetGullState() const { return State; }
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Gull")
+	float MoveSpeed = 300.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Gull")
+	float ArrivalDistance = 50.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Gull")
+	float SwarmDuration = 2.f;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="Gull")
+	EGullState State = EGullState::Idle;
+
+protected:
+	virtual void BeginPlay() override;
+
+	UPROPERTY()
+	FVector StartLocation;
+
+	UPROPERTY()
+	FRotator StartRotation;
+
+	UPROPERTY()
+	TObjectPtr<AActor> LockedTarget;
+
+	UPROPERTY()
+	TObjectPtr<ADocksPuzzleManager> PuzzleManager;
+
+	UPROPERTY()
+	float SwarmTimer = 0.f;
+
+	UPROPERTY()
+	TObjectPtr<AActor> CurrentWaypoint;
+
+	UPROPERTY()
+	TObjectPtr<AActor> NextTarget;
+
+	AADockLightTemplate* FindBestTarget(const TArray<AADockLightTemplate*>& Lights) const;
+
+	AGullRestPoint* FindBlockingRestPoint(
+		const FVector& Destination,
+		const TArray<AGullRestPoint*>& RestPoints) const;
+
+	void SetTarget(AActor* NewTarget);
+	void SetWaypoint(AActor* NewWaypoint);
+	void EnterSwarming();
+	void FinishTurn();
 };

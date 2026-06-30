@@ -1,47 +1,46 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "ADockLightTemplate.generated.h"
 
+class ADocksPuzzleManager;
+
 UCLASS()
 class HELICONUNREAL_API AADockLightTemplate : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
-	// Sets default values for this actor's properties
-	AADockLightTemplate();
 
-	UPROPERTY()
-	class ADocksPuzzleManager* PuzzleManager;
+public:
+	AADockLightTemplate();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Light")
 	bool bIsLit;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Light")
-	float GullPriority;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Puzzle")
+	bool bRequiredForWin = true;
 
-	UFUNCTION(BlueprintCallable)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Light")
+	bool bIsDecoy = false;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="Light")
+	int32 ActivationOrder = -1;
+
+	UFUNCTION(BlueprintCallable, Category="Light")
 	virtual void LightOn();
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category="Light")
 	virtual void LightOff();
 
-	UPROPERTY(BlueprintReadOnly, Category="Light")
-	bool bIsLocked = false;
+	UFUNCTION(BlueprintCallable, Category="Light")
+	void ResetLightState();
+
+	UFUNCTION(BlueprintImplementableEvent, Category="Light")
+	void BP_LightStateChanged(bool bNewIsLit);
+
+	void RegisterPuzzleManager(ADocksPuzzleManager* InPuzzleManager);
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-	bool bPendingActivation;
-	float ActivationTimer;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
+	UPROPERTY()
+	TObjectPtr<ADocksPuzzleManager> PuzzleManager;
 };
