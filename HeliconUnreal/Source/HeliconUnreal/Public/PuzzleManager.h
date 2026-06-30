@@ -12,6 +12,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(
 	bStateB
 );
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPuzzleUnlocked);
+
 UCLASS()
 class HELICONUNREAL_API APuzzleManager : public AActor
 {
@@ -29,5 +31,17 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void ToggleRoomState();
+	
+	UPROPERTY(BlueprintAssignable)
+	FOnPuzzleUnlocked OnPuzzleUnlocked;
+	
+	UPROPERTY(BlueprintReadOnly)
+	int32 ActivatedObjects = 0;
+	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	int32 RequiredObjects = 3;
+	
+	UFUNCTION(BlueprintCallable)
+	void RegisterActivatedObject();
 };
 
