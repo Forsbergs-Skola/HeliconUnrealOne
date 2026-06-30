@@ -3,7 +3,7 @@
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
 #include "EventTagsStruct.h"
-
+#include "DialogueChoiceStruct.h"
 #include "DialogueLineStruct.generated.h"
 
 USTRUCT(BlueprintType)
