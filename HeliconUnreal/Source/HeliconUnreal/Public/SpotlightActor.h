@@ -1,49 +1,54 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "ADockLightTemplate.h"
+#include "Engine/EngineTypes.h"
 #include "Interactable.h"
-#include "DocksPuzzleManager.h"
-#include "Kismet/GameplayStatics.h"
-#include "DrawDebugHelpers.h"
 #include "SpotlightActor.generated.h"
 
+class AADockLightTemplate;
+class ADocksPuzzleManager;
 
 UCLASS()
 class HELICONUNREAL_API ASpotlightActor : public AActor, public IInteractable
 {
 	GENERATED_BODY()
-	
-public:	
-	// Sets default values for this actor's properties
+
+public:
 	ASpotlightActor();
 
-	UPROPERTY()
-	AADockLightTemplate* CurrentTarget;
-
-	UPROPERTY()
-	float ContactTime;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float RequiredHoldTime = 3.0f;
-
-	UPROPERTY()
-	ADocksPuzzleManager* PuzzleManager;
-
-	UPROPERTY(BlueprintReadWrite)
-	bool bIsControlled = false;
-
+	virtual void Tick(float DeltaTime) override;
 	virtual void Interact_Implementation() override;
 
+	UFUNCTION(BlueprintCallable, Category="Spotlight")
+	void ResetForPuzzle();
+
+	void RegisterPuzzleManager(ADocksPuzzleManager* InPuzzleManager);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spotlight")
+	float RequiredHoldTime = 3.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spotlight")
+	float TraceDistance = 2000.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spotlight")
+	bool bDrawDebugTrace = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spotlight")
+	TEnumAsByte<ECollisionChannel> TraceChannel = ECC_Visibility;
+
+	UPROPERTY(BlueprintReadWrite, Category="Spotlight")
+	bool bIsControlled = false;
+
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	UPROPERTY()
+	TObjectPtr<AADockLightTemplate> CurrentTarget;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	UPROPERTY()
+	float ContactTime = 0.f;
 
+	UPROPERTY()
+	TObjectPtr<ADocksPuzzleManager> PuzzleManager;
+
+	AADockLightTemplate* FindUnlitLightAlongTrace(const FVector& Start, const FVector& End, bool& bOutHit) const;
 };
