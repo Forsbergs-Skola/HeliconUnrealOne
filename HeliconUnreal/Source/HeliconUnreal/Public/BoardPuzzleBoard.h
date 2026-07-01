@@ -15,19 +15,22 @@ public:
 	ABoardPuzzleBoard();
 	
 	UFUNCTION(BlueprintCallable)
-	TArray<FText>& GetCorrectLinkCompletionOrder();
+	TArray<FName>& GetCorrectLinkCompletionOrder();
 	
 	UFUNCTION(BlueprintCallable)
-	TArray<FText>& GetCompletedNodes();
+	TArray<FName>& GetCompletedNodes();
 	
 	UFUNCTION(BlueprintCallable)
-	void AddCompletedLinks(const FText ID);
+	void AddCompletedLinks(const FName ID);
+	
+	UFUNCTION(BlueprintCallable)
+	void RemoveCompletedLink(const FName ID);
 	
 	UFUNCTION(BlueprintCallable)
 	bool HasCompletedCorrectly();
 	
 	UFUNCTION(BlueprintCallable)
-	FText& ID() { return BoardID; }
+	FName& ID() { return BoardID; }
 	
 protected:
 	virtual void BeginPlay() override;
@@ -39,14 +42,14 @@ public:
 	TObjectPtr<UStaticMeshComponent> BoardMesh;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Board)
-	FText BoardID;
+	FName BoardID;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Board)
 	UMaterialInterface* BoardMaterial;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Board)
-	TArray<FText> CorrectLinkCompletionOrder;
+	TArray<FName> CorrectLinkCompletionOrder;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Board)
-	TArray<FText> CompletedLinks;
+	TArray<FName> CompletedLinks;
 };

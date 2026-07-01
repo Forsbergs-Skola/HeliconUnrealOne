@@ -8,19 +8,24 @@ ABoardPuzzleBoard::ABoardPuzzleBoard()
 	BoardMesh->SetupAttachment(RootComponent);
 }
 
-TArray<FText>& ABoardPuzzleBoard::GetCorrectLinkCompletionOrder()
+TArray<FName>& ABoardPuzzleBoard::GetCorrectLinkCompletionOrder()
 {
 	return CorrectLinkCompletionOrder;
 }
 
-TArray<FText>& ABoardPuzzleBoard::GetCompletedNodes()
+TArray<FName>& ABoardPuzzleBoard::GetCompletedNodes()
 {
 	return CompletedLinks;
 }
 
-void ABoardPuzzleBoard::AddCompletedLinks(const FText ID)
+void ABoardPuzzleBoard::AddCompletedLinks(const FName ID)
 {
 	CompletedLinks.Add(ID);
+}
+
+void ABoardPuzzleBoard::RemoveCompletedLink(const FName ID)
+{
+	CompletedLinks.Remove(ID);
 }
 
 bool ABoardPuzzleBoard::HasCompletedCorrectly()

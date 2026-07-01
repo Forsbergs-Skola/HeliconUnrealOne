@@ -31,7 +31,7 @@ public:
 	void ChangeMaterial(ELinkStatus LinkStatus);
 	
 	UFUNCTION(BlueprintCallable)
-	FText& GetID();
+	FName& GetID();
 	
 protected:
 	virtual void BeginPlay() override;
@@ -52,5 +52,5 @@ public:
 	TObjectPtr<UStaticMeshComponent> LinkMesh;
 	
 	UPROPERTY(EditAnywhere, Category = "Link|Visual")
-	FText LinkID;
+	FName LinkID;
 };

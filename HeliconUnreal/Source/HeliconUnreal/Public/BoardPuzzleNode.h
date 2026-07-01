@@ -29,6 +29,9 @@ public:
 	
 	UFUNCTION()
 	void HandleNormalNode();
+	
+	UFUNCTION(BlueprintCallable)
+    void Reset();
 
 protected:
 	virtual void BeginPlay() override;
