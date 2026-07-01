@@ -38,6 +38,12 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bCrosshairVisible;
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int FinalQuestionsAnswered = 0;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int FinalWrongAnswers = 0;
+	
 	UFUNCTION(BlueprintCallable)
 	void SetSecondsPlayed(int value);
 	
@@ -52,6 +58,12 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void SetCrosshairVisible(bool value);
+	
+	UFUNCTION(BlueprintCallable)
+	void IncrementFinalQuestionsAnswered();
+	
+	UFUNCTION(BlueprintCallable)
+	void IncrementFinalWrongAnswers();
 	
 	UFUNCTION(BlueprintCallable)
 	void SayHello();
