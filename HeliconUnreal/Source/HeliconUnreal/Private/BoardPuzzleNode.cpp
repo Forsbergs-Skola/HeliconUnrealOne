@@ -34,12 +34,12 @@ void ABoardPuzzleNode::BeginPlay()
 
     if (bIsEndingNode && !EndingNodeMaterial)
     {
-        SCREEN_LOG(3, FColor::Red, TEXT("No EndingNodeMaterial assigned to %s!"), *GetName());
+        SCREEN_LOG(3, FColor::Red, TEXT("No EndingNodeMaterial assigned to {0}!"), *GetName());
     }
 
     if (!NodeMaterial)
     {
-        SCREEN_LOG(3, FColor::Red, TEXT("No NodeMaterial assigned to %s!"), *GetName());
+        SCREEN_LOG(3, FColor::Red, TEXT("No NodeMaterial assigned to {0}!"), *GetName());
     }
     
     if (NodeMesh && NodeMaterial)
@@ -63,16 +63,16 @@ void ABoardPuzzleNode::OnNodeClicked(UPrimitiveComponent* ClickedComp, FKey Butt
 
 void ABoardPuzzleNode::UnlockLink()
 { 
-    SCREEN_LOG(3, FColor::Yellow, TEXT("=== UnlockLink() started on Node: %s ==="), *GetName());
+    SCREEN_LOG(3, FColor::Yellow, TEXT("=== UnlockLink() started on Node: {0} ==="), *GetName());
 
-    SCREEN_LOG(3, FColor::Yellow, TEXT("StartingNode: %s | EndingNode: %s"), bIsStartingNode ? TEXT("TRUE") : TEXT("FALSE"),
+    SCREEN_LOG(3, FColor::Yellow, TEXT("StartingNode: {0} | EndingNode: {0}"), bIsStartingNode ? TEXT("TRUE") : TEXT("FALSE"),
         bIsEndingNode ? TEXT("TRUE") : TEXT("FALSE"));
     
     if (OwnedLink)
     {
         if (OwnedLink->GetIsUnlocked())
         {
-            SCREEN_LOG(3, FColor::Yellow, TEXT("STOPPED: Link %s is already unlocked. Skipping duplicate registration."), *OwnedLink->GetName());
+            SCREEN_LOG(3, FColor::Yellow, TEXT("STOPPED: Link {0} is already unlocked. Skipping duplicate registration."), *OwnedLink->GetName());
             HandleEndingNode(); 
             return;
         }
@@ -81,7 +81,7 @@ void ABoardPuzzleNode::UnlockLink()
     }
     else 
     {
-        SCREEN_LOG(3, FColor::Yellow, TEXT("%s has no OwnedLink, skipping link unlock logic."), *GetName());
+        SCREEN_LOG(3, FColor::Yellow, TEXT("{0} has no OwnedLink, skipping link unlock logic."), *GetName());
     }
 
     HandleEndingNode();
@@ -91,7 +91,7 @@ bool ABoardPuzzleNode::CheckCompletion()
 {
     if (Board)
     {
-        SCREEN_LOG(3, FColor::Yellow, TEXT("HasCompletedCorrectly = %s"), 
+        SCREEN_LOG(3, FColor::Yellow, TEXT("HasCompletedCorrectly = {0}"), 
           Board->HasCompletedCorrectly() ? TEXT("TRUE") : TEXT("FALSE"));     
     }
     
@@ -101,17 +101,17 @@ bool ABoardPuzzleNode::CheckCompletion()
         {
             NodeMesh->SetMaterial(0, EndingNodeMaterial);
                 
-            SCREEN_LOG(3, FColor::Yellow, TEXT("Applied ending material to %s"), *GetName());
+            SCREEN_LOG(3, FColor::Yellow, TEXT("Applied ending material to {0}"), *GetName());
         }
         else
         {
             SCREEN_LOG(3, FColor::Red, TEXT("NodeMesh or EndingNodeMaterial is NULL!"));
         }
 
-        SCREEN_LOG(3, FColor::Green, TEXT("Board( %s ) Completed!"), Board->ID());
+        SCREEN_LOG(3, FColor::Green, TEXT("Board{0}  Completed!"), Board->ID());
         return true;
     }
-    SCREEN_LOG(3, FColor::Red, TEXT("Board( %s ) Not Completed!"), Board->ID());
+    SCREEN_LOG(3, FColor::Red, TEXT("Board{0} Not Completed!"), Board->ID());
     return false;
 }
 
@@ -128,7 +128,7 @@ void ABoardPuzzleNode::NotifyCompletion()
         TagStruct.TagsList = TagList;
         GameInstance->EventRelay->NotifyGameDataUpdated(TagStruct);
         
-        SCREEN_LOG(3, FColor::Green, TEXT("Notified Completion, Tag ( %s )"), *Board->ID().ToString());
+        SCREEN_LOG(3, FColor::Green, TEXT("Notified Completion, Tag {0}"), *Board->ID().ToString());
         return;
     }
     SCREEN_LOG(3, FColor::Red, TEXT("Failed to get or cast to game instance!"));
