@@ -127,6 +127,8 @@ void ABoardPuzzleNode::NotifyCompletion()
         TagList.Add(*Board->ID().ToString());
         TagStruct.TagsList = TagList;
         GameInstance->EventRelay->NotifyGameDataUpdated(TagStruct);
+        
+        SCREEN_LOG(3, FColor::Green, TEXT("Notified Completion, Tag ( %s )"), *Board->ID().ToString());
         return;
     }
     SCREEN_LOG(3, FColor::Red, TEXT("Failed to get or cast to game instance!"));
@@ -141,6 +143,7 @@ void ABoardPuzzleNode::UpdateBoard()
     else
     {
         SCREEN_LOG(3, FColor::Red, TEXT("Board ( %s ) pointer is NULL on %s!"), Board->ID() ,*GetName());
+        UE_LOG(LogTemp, Error, TEXT("Notified Completion, Tag ( %s )"), *Board->ID().ToString());
     }
 }
 
