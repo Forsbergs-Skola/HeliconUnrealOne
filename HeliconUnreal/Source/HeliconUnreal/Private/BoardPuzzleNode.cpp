@@ -89,8 +89,11 @@ void ABoardPuzzleNode::UnlockLink()
 
 bool ABoardPuzzleNode::CheckCompletion()
 {
-    SCREEN_LOG(3, FColor::Yellow, TEXT("HasCompletedCorrectly = %s"), 
-           Board->HasCompletedCorrectly() ? TEXT("TRUE") : TEXT("FALSE"));
+    if (Board)
+    {
+        SCREEN_LOG(3, FColor::Yellow, TEXT("HasCompletedCorrectly = %s"), 
+          Board->HasCompletedCorrectly() ? TEXT("TRUE") : TEXT("FALSE"));     
+    }
     
     if (Board->HasCompletedCorrectly())
     {
@@ -116,7 +119,7 @@ void ABoardPuzzleNode::NotifyCompletion()
 {
     UCPP_HeliconGameInstance* GameInstance = Cast<UCPP_HeliconGameInstance>(GetWorld()->GetGameInstance());
 	
-    if (GameInstance)
+    if (GameInstance && Board)
     {
         FEventTagsStruct TagStruct;
         TArray<FName> TagList;
