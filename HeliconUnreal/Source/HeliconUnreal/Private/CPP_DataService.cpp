@@ -122,6 +122,34 @@ void UCPP_DataService::SetCrosshairVisible(bool value)
 	}
 }
 
+void UCPP_DataService::IncrementFinalQuestionsAnswered()
+{
+	FinalQuestionsAnswered++;
+	UCPP_HeliconGameInstance* GI = Cast<UCPP_HeliconGameInstance>(GetWorld()->GetGameInstance());
+	if (GI)
+	{
+		FEventTagsStruct TagStruct;
+		TArray<FName> _TagsList;
+		_TagsList.Add("FINAL_QUESTIONS");
+		TagStruct.TagsList = _TagsList;
+		GI->EventRelay->NotifyGameDataUpdated(TagStruct);
+	}
+}
+
+void UCPP_DataService::IncrementFinalWrongAnswers()
+{
+	FinalWrongAnswers++;
+	UCPP_HeliconGameInstance* GI = Cast<UCPP_HeliconGameInstance>(GetWorld()->GetGameInstance());
+	if (GI)
+	{
+		FEventTagsStruct TagStruct;
+		TArray<FName> _TagsList;
+		_TagsList.Add("FINAL_WRONGS");
+		TagStruct.TagsList = _TagsList;
+		GI->EventRelay->NotifyGameDataUpdated(TagStruct);
+	}
+}
+
 void UCPP_DataService::SayHello()
 {
 	UE_LOG(LogTemp, Log, TEXT("Hello data service!"));
