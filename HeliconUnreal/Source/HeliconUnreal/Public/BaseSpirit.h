@@ -46,6 +46,8 @@ public:
 	float FloatingSpeed;
 
 
+
+
 	UPROPERTY()
 	TObjectPtr<class UMaterialInstanceDynamic> DynamicMaterial;
 
@@ -57,6 +59,9 @@ public:
 
 	UFUNCTION()
 	void OnIdle();
+
+	UFUNCTION(BlueprintCallable, Category = "Spirit")
+	void MoveSpiritTo(FVector NewLocation);
 
 private:
 	void YAxisRotation();

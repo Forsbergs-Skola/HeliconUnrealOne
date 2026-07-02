@@ -55,7 +55,7 @@ void ABaseSpirit::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	Time = DeltaTime;
+	Time += DeltaTime;
 
 	// Test 
 	OnIdle();
@@ -85,3 +85,8 @@ void ABaseSpirit::YAxisFloating() {
 	SetActorLocation(NewY);
 }
 
+void ABaseSpirit::MoveSpiritTo(FVector NewLocation)
+{
+	InitialLocation = NewLocation;
+	SetActorLocation(NewLocation);
+}
