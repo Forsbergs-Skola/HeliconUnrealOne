@@ -89,8 +89,11 @@ void ABoardPuzzleNode::UnlockLink()
 
 bool ABoardPuzzleNode::CheckCompletion()
 {
-    SCREEN_LOG(3, FColor::Yellow, TEXT("HasCompletedCorrectly = %s"), 
-           Board->HasCompletedCorrectly() ? TEXT("TRUE") : TEXT("FALSE"));
+    if (Board)
+    {
+        SCREEN_LOG(3, FColor::Yellow, TEXT("HasCompletedCorrectly = %s"), 
+          Board->HasCompletedCorrectly() ? TEXT("TRUE") : TEXT("FALSE"));     
+    }
     
     if (Board->HasCompletedCorrectly())
     {
@@ -116,7 +119,7 @@ void ABoardPuzzleNode::NotifyCompletion()
 {
     UCPP_HeliconGameInstance* GameInstance = Cast<UCPP_HeliconGameInstance>(GetWorld()->GetGameInstance());
 	
-    if (GameInstance)
+    if (GameInstance && Board)
     {
         FEventTagsStruct TagStruct;
         TArray<FName> TagList;
@@ -124,6 +127,8 @@ void ABoardPuzzleNode::NotifyCompletion()
         TagList.Add(*Board->ID().ToString());
         TagStruct.TagsList = TagList;
         GameInstance->EventRelay->NotifyGameDataUpdated(TagStruct);
+        
+        SCREEN_LOG(3, FColor::Green, TEXT("Notified Completion, Tag ( %s )"), *Board->ID().ToString());
         return;
     }
     SCREEN_LOG(3, FColor::Red, TEXT("Failed to get or cast to game instance!"));
@@ -138,6 +143,7 @@ void ABoardPuzzleNode::UpdateBoard()
     else
     {
         SCREEN_LOG(3, FColor::Red, TEXT("Board ( %s ) pointer is NULL on %s!"), Board->ID() ,*GetName());
+        UE_LOG(LogTemp, Error, TEXT("Notified Completion, Tag ( %s )"), *Board->ID().ToString());
     }
 }
 
