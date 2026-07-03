@@ -2,13 +2,13 @@
 
 ## Overview
 
-This project uses a lightweight event system to decouple gameplay “services” (systems that *produce* updates) from gameplay actors/components/UI (systems that *react* to updates). Rather than having every consumer keep direct references to every producer—or constantly polling—services broadcast events through a shared relay object.
+This project uses a lightweight event system to decouple gameplay “services” (systems that *produce* updates) from gameplay actors/components/UI (systems that *react* to updates). Rather than having every consumer keep direct references to every producer, or constantly polling, services broadcast events through a shared relay object.
 
 The result is a **content-based publish/subscribe (pub-sub)** style architecture:
 
 - **Publishers** (e.g., `CPP_DataService`, `CPP_DialogueService`) broadcast events when something meaningful happens.
 - **Subscribers** (any C++ class or Blueprint) register callbacks to be notified.
-- **Event payloads** can be empty or include **event tags**—an arbitrary array of `FName` values that act as metadata tags so listeners can quickly filter what they care about without needing separate event types for every variation.
+- **Event payloads** can be empty or include **event tags**: an arbitrary array of `FName` values that act as metadata tags so listeners can quickly filter what they care about without needing separate event types for every variation.
 
 This document describes the design patterns in use, typical usage, and the purpose of event tags.
 
@@ -20,14 +20,6 @@ This document describes the design patterns in use, typical usage, and the purpo
 - `Source/HeliconUnreal/Private/CPP_EventRelay.cpp`  
   Defines the central relay / aggregator used to register listeners and broadcast events.
 
-- `Source/HeliconUnreal/Public/CPP_DialogueService.h`
-- `Source/HeliconUnreal/Private/CPP_DialogueService.cpp`  
-  Demonstrates “gameplay narrative” events such as conversation start/end, line written, and choice taken.
-
-- `Source/HeliconUnreal/Public/CPP_DataService.h`
-- `Source/HeliconUnreal/Private/CPP_DataService.cpp`  
-  Demonstrates “state/data” events such as “game data updated”.
-
 - `Source/HeliconUnreal/Public/EventTagsStruct.h`  
   Defines the event tag payload structure that can be attached to events.
 
@@ -35,7 +27,7 @@ This document describes the design patterns in use, typical usage, and the purpo
 
 ## What Problem This Solves
 
-A naive event implementation -- characterized by direct calls into game systems from the UI, hard references between game actors, or continuous polling -- would introduce a number of problems:
+A naive event implementation (characterized by direct calls into game systems from the UI, hard references between game actors, or continuous polling) would introduce a number of problems:
 
 - **High coupling** (changing one system forces changes in many others)
 - **Hard-to-follow dependencies**
@@ -66,9 +58,9 @@ Rather than each service exposing many delegates and requiring everyone to refer
 - Reduces “everyone depends on everyone” relationships
 
 ### 3) Service Locator ( [GameInstance as Access Point](./game_instance_as_singleton.md) )
-Listeners commonly obtain the relevant service through the GameInstance (or a subsystem-like pattern). This is effectively a **Service Locator**:
+Listeners commonly obtain the relevant service through the [GameInstance](game_instance_as_singleton.md) (or a subsystem-like pattern). This is effectively a **Service Locator**:
 
-- “When I get the event, I fetch the `DataService` from the GameInstance and refresh my state.”
+- For example: “When I get the event, I fetch the `DataService` from the GameInstance and refresh my state.”
 
 ---
 
