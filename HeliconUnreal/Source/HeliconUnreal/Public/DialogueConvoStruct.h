@@ -18,7 +18,7 @@ public:
 	FName ConvoNameName;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UDataTable* ConvoLinesTable;
+	UDataTable* ConvoLinesTable = nullptr;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FEventTagsStruct ConvoStartedTags;

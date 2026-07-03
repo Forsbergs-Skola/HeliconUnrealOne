@@ -25,13 +25,13 @@ public:
 	TArray<FDialogueChoiceStruct> Choices;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
-	bool bIsQuit;
+	bool bIsQuit = false;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
 	bool bShowPortrait = false;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
-	UTexture2D* PortraitTexture;
+	UTexture2D* PortraitTexture = nullptr;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
 	FEventTagsStruct LineWrittenTags;
