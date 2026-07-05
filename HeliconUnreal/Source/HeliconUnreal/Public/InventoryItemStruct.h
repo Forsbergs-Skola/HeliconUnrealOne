@@ -19,5 +19,5 @@ public:
 	FText Description;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
-	UTexture2D* UI_Image;
+	UTexture2D* UI_Image = nullptr;
 };

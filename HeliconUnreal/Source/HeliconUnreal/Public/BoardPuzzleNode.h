@@ -71,5 +71,5 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Node")
 	TObjectPtr<ABoardPuzzleBoard> Board;
 	
-    
+  
 };

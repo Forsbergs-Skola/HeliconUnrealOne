@@ -47,49 +47,111 @@ GameInstanceClass=/Script/HeliconUnreal.CPP_HeliconGameInstance
 
 ## Accessing Singleton Services
 
-### In C++
+### C++
+
+#### Example 1: Triggering a managed event (CPP_DataService.cpp)
 
 First, get the `UCPP_HeliconGameInstance` from the current world context:
 
 ```cpp
 #include "CPP_HeliconGameInstance.h"
 
-// Get the game instance and cast it to UCPP_HeliconGameInstance
-UCPP_HeliconGameInstance* GI = Cast<UCPP_HeliconGameInstance>(GetWorld()->GetGameInstance());
-	if (GI) // if the cast sucseeds
+void UCPP_DataService::SetSecondsPlayed(int value)
+{
+	SecondsPlayed = value;
+	UCPP_HeliconGameInstance* GI = Cast<UCPP_HeliconGameInstance>(GetWorld()->GetGameInstance());
+	
+	if (GI)
 	{
-		GI->EventRelay->NotifySomethingHappened();
-        // ...
+		FEventTagsStruct TS;
+		TArray<FName> _TagsList;
+		_TagsList.Add("SECONDS");
+		TS.TagsList = _TagsList;
+		GI->EventRelay->NotifyGameDataUpdated(TS);
 	}
 	else
-	// a cast failure indicates a likely config problem...
-	// For example, the Game Instance isn't properly set in the project settings
 	{
-		UE_LOG(LogTemp, Error, TEXT("Failed to get and/or cast game instance!"));
+		UE_LOG(LogTemp, Error, TEXT("DataService failed to get and/or cast game instance"));
 	}
+}
 ```
 
-### Blueprint example: Triggering a conversation with `DialogueService`
+#### Example 2: Subscribing to a managed event (CPP_DialogueAudio.cpp)
 
-#### Step 1: Get Game Instance
+```cpp
+#include "CPP_HeliconGameInstance.h"
 
-(TODO: screenshot)
+void ACPP_DialogueAudio::BeginPlay()
+{
+	Super::BeginPlay();
+	UCPP_HeliconGameInstance* GI = Cast<UCPP_HeliconGameInstance>(GetWorld()->GetGameInstance());
+	if (!GI)
+	{
+		return;
+	}
+	
+	UCPP_EventRelay* ER = GI->EventRelay;
+	if (!ER)
+	{
+		return;
+	}
+	
+	ER->OnDialogueLineWritten.AddDynamic(this, &ACPP_DialogueAudio::HandleOnLineWritten);
+	
+}
 
-#### Step 2: Call service getters
+void ACPP_DialogueAudio::HandleOnLineWritten(FEventTagsStruct EventTags)
+{
+	// call the BlueprintImplementableEvent
+	if (EventTags.TagsList.Contains("LONG"))
+	{
+		if (EventTags.TagsList.Contains("MALE"))
+		{
+			OnMaleLongLineWritten();
+		}
+		else
+		{
+			OnFemaleLongLineWritten();
+		}
+	}
+	else if (EventTags.TagsList.Contains("MEDIUM"))
+	{
+		if (EventTags.TagsList.Contains("MALE"))
+		{
+			OnMaleMediumLineWritten();
+		}
+		else
+		{
+			OnFemaleMediumLineWritten();
+		}
+	}
+	else if (EventTags.TagsList.Contains("SHORT"))
+	{
+		if (EventTags.TagsList.Contains("MALE"))
+		{
+			OnMaleShortLineWritten();
+		}
+		else
+		{
+			OnFemaleShortLineWritten();
+		}
+	}
+}
+```
 
-(TODO: screenshot)
+
+
+### Blueprints 
+
+#### Example 1: Starting a dialogue conversation (BP_GenericDialogueTrigger)
+
+![screenshot](start_convo.png)
+
+#### Example 2: Subscribing to a managed event (BP_ConditionalDialogueTrigger)
+
+![screenshot](subscribe.png)
 
 ---
-
-### Blueprint example: Reacting to an event managed by `EventRelay`
-
-#### Step 1: Get Game Instance
-
-(TODO: screenshot)
-
-#### Step 2: Call service getters
-
-(TODO: screenshot)
 
 ## Summary
 
