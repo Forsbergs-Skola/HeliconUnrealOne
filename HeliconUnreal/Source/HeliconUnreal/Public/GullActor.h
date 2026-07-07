@@ -48,6 +48,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Gull")
 	float SwarmDuration = 2.f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Gull")
+	float FlightHeightOffset = 0.f;
+
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="Gull")
 	EGullState State = EGullState::Idle;
 
@@ -80,6 +83,11 @@ protected:
 	AGullRestPoint* FindBlockingRestPoint(
 		const FVector& Destination,
 		const TArray<AGullRestPoint*>& RestPoints) const;
+
+	FVector GetFlightLocation(const FVector& WorldLocation) const;
+	FVector GetFlightLocationForActor(const AActor* Target) const;
+	bool HasReachedWaypoint(const AActor* Waypoint) const;
+	bool HasReachedFlightTarget(const FVector& TargetLocation) const;
 
 	void SetTarget(AActor* NewTarget);
 	void SetWaypoint(AActor* NewWaypoint);
