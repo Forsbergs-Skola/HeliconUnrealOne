@@ -16,6 +16,31 @@ void AGullActor::BeginPlay()
 	StartRotation = GetActorRotation();
 }
 
+FVector AGullActor::GetFlightLocation(const FVector& WorldLocation) const
+{
+	return WorldLocation + FVector(0.f, 0.f, FlightHeightOffset);
+}
+
+FVector AGullActor::GetFlightLocationForActor(const AActor* Target) const
+{
+	return Target ? GetFlightLocation(Target->GetActorLocation()) : FVector::ZeroVector;
+}
+
+bool AGullActor::HasReachedWaypoint(const AActor* Waypoint) const
+{
+	if (!Waypoint)
+	{
+		return false;
+	}
+
+	return FVector::Dist2D(GetActorLocation(), Waypoint->GetActorLocation()) <= ArrivalDistance;
+}
+
+bool AGullActor::HasReachedFlightTarget(const FVector& TargetLocation) const
+{
+	return FVector::Dist(GetActorLocation(), TargetLocation) <= ArrivalDistance;
+}
+
 AADockLightTemplate* AGullActor::FindBestTarget(const TArray<AADockLightTemplate*>& Lights) const
 {
 	AADockLightTemplate* BestDecoy = nullptr;
@@ -90,7 +115,8 @@ bool AGullActor::StartTurn(
 
 	NextTarget = BestTarget;
 
-	if (AGullRestPoint* StartPoint = FindBlockingRestPoint(BestTarget->GetActorLocation(), RestPoints))
+	if (AGullRestPoint* StartPoint = FindBlockingRestPoint(
+		GetFlightLocationForActor(BestTarget), RestPoints))
 	{
 		SetWaypoint(StartPoint);
 	}
@@ -126,7 +152,9 @@ AGullRestPoint* AGullActor::FindBlockingRestPoint(
 	const TArray<AGullRestPoint*>& RestPoints) const
 {
 	const FVector Start = GetActorLocation();
-	const FVector LineDir = Destination - Start;
+	const FVector Start2D(Start.X, Start.Y, 0.f);
+	const FVector Dest2D(Destination.X, Destination.Y, 0.f);
+	const FVector LineDir = Dest2D - Start2D;
 	const float LineLengthSq = LineDir.SizeSquared();
 
 	AGullRestPoint* Best = nullptr;
@@ -139,7 +167,9 @@ AGullRestPoint* AGullActor::FindBlockingRestPoint(
 			continue;
 		}
 
-		const FVector ToPoint = RestPoint->GetActorLocation() - Start;
+		const FVector RestLocation = RestPoint->GetActorLocation();
+		const FVector Rest2D(RestLocation.X, RestLocation.Y, 0.f);
+		const FVector ToPoint = Rest2D - Start2D;
 
 		const float T = LineLengthSq > 0.f
 			? FVector::DotProduct(ToPoint, LineDir) / LineLengthSq
@@ -150,8 +180,8 @@ AGullRestPoint* AGullActor::FindBlockingRestPoint(
 			continue;
 		}
 
-		const FVector ClosestPointOnLine = Start + LineDir * T;
-		const float DistFromLine = FVector::Dist(RestPoint->GetActorLocation(), ClosestPointOnLine);
+		const FVector ClosestPointOnLine = Start2D + LineDir * T;
+		const float DistFromLine = FVector::Dist2D(Rest2D, ClosestPointOnLine);
 
 		if (DistFromLine <= RestPoint->GetBlockingRadius() && DistFromLine < BestDist)
 		{
@@ -183,13 +213,16 @@ void AGullActor::Tick(float DeltaTime)
 				return;
 			}
 
-			const FVector TargetLocation = Target->GetActorLocation();
-			const float Distance = FVector::Dist(GetActorLocation(), TargetLocation);
+			const FVector TargetLocation = GetFlightLocationForActor(Target);
+			const bool bReachedWaypoint = CurrentWaypoint && HasReachedWaypoint(Target);
+			const bool bReachedLight = !CurrentWaypoint && HasReachedFlightTarget(TargetLocation);
 
-			if (Distance <= ArrivalDistance)
+			if (bReachedWaypoint || bReachedLight)
 			{
 				if (CurrentWaypoint)
 				{
+					SetActorLocation(GetFlightLocation(Target->GetActorLocation()));
+
 					CurrentWaypoint = nullptr;
 					State = EGullState::WaitingAtRestPoint;
 
