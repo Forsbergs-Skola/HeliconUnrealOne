@@ -23,6 +23,9 @@ public:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	UCPP_DialogueService* DialogueService;
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool bBadEnding;
+	
 	UFUNCTION()
 	virtual void Init() override;
 };
