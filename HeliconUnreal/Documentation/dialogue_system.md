@@ -20,6 +20,15 @@ This document focuses on the authoring workflow and how to trigger conversations
 
 ---
 
+## Minimal “how to use” summary
+- Make a Data Table using `FDialogueLineStruct`.
+- Put that Data Table into a `FDialogueConvoStruct`.
+- Put that struct on an actor as an instance-editable variable.
+- On trigger: `GameInstance -> DialogueService -> StartConvo(ConvoStruct)`.
+- UI hears “convo started” and takes it from there, managing the dialogue presentation and triggering `EndConvo()` at the appropriate time.
+
+---
+
 ## Key types (C++ structs / classes)
 
 ### `FEventTagsStruct` (`EventTagsStruct.h`)
@@ -186,12 +195,3 @@ Tags serve as lightweight “signals” about narrative progression or player ac
 - `Quest01_Accepted`
 - `Heard_Rumor_About_Cave`
 - `Choice_Spared_Enemy`
-
----
-
-## Minimal “how to use” summary
-- Make a Data Table using `FDialogueLineStruct`.
-- Put that Data Table into a `FDialogueConvoStruct`.
-- Put that struct on an actor as an instance-editable variable.
-- On trigger: `GameInstance -> DialogueService -> StartConvo(ConvoStruct)`.
-- UI hears “convo started” and runs the conversation until `EndConvo()`.
