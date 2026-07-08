@@ -207,53 +207,6 @@ For big state (large structs, arrays), prefer fetching from the service after th
 
 ---
 
-## Example (Conceptual Pseudocode)
-
-### Subscribing to Data Updates (Listener Side)
-```cpp
-// Pseudocode
-
-void UInventoryWidget::NativeConstruct()
-{
-    // Subscribe to OnGameDataUpdated
-}
-
-void UInventoryWidget::OnGameDataUpdated(const FEventTags& Tags)
-{
-    if (!Tags.Contains("INVENTORY"))
-        return;
-
-    // Pull state from DataService via GameInstance and rebuild UI
-}
-```
-
-### Broadcasting from DataService (Publisher Side)
-```cpp
-// Pseudocode
-
-void UCPP_DataService::AddItem(...)
-{
-    // mutate internal inventory...
-
-    BroadcastOnGameDataUpdated({ "INVENTORY", "ITEM_ADDED" });
-}
-```
-
-### Dialogue “Laugh Track” (Audio Listener)
-```cpp
-// Pseudocode
-
-void UAudioService::OnDialogueLineWritten(const FEventTags& Tags /*, maybe line info */)
-{
-    if (Tags.Contains("LAUGH"))
-    {
-        PlayLaughSFX();
-    }
-}
-```
-
----
-
 ## Summary
 
 This event system provides a clean, readable way to structure Unreal gameplay code around:
