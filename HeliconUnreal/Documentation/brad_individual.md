@@ -17,7 +17,10 @@ I designed and implemented the centralized [event system](./event_service_and_ta
 - Implementation: [CPP_EventRelay.cpp](../Source/HeliconUnreal/Private/CPP_EventRelay.cpp)
 
 #### Dialogue System
-I designed our game's [branching dialogue system](./dialogue_system.md) as UCPP_DialogueService and WBP_DialogueUI.
+I designed our game's [branching dialogue system](./dialogue_system.md) as UCPP_DialogueService and WBP_DialogueUI, and a dialogue audio system as UCPP_DialogueAudio
+
+- Header: [CPP_DialogueService.h](../Source/HeliconUnreal/Public/CPP_DialogueService.h), [CPP_DialogueAudio.h](../Source/HeliconUnreal/Public/CPP_DialogueAudio.h)
+- Implementation: [CPP_DialogueService.cpp](../Source/HeliconUnreal/Private/CPP_DialogueService.cpp), [CPP_DialogueAudio.cpp](../Source/HeliconUnreal/Private/CPP_DialogueAudio.cpp)
 
 #### Sliding-Tile Puzzle
 I designed and implemented a widget-based sliding tile puzzle, and integrated it into the overall game sequence via the singleton services mentioned above.
