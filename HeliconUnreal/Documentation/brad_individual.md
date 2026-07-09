@@ -33,8 +33,8 @@ I designed and implemented a widget-based sliding tile puzzle, and integrated it
 
 - Widget Blueprints: [Puzzle Widget](../Content/GUI/ManagedWidgets/SlidingTilePuzzle/WBP_SlidingPuzzle.uasset), [Puzzle Tile Widget](../Content/GUI/ManagedWidgets/SlidingTilePuzzle/WBP_SlidingPuzzleTile.uasset)
 
-![puzzle_1](./puzzle_screenshot_1.png)
-![puzzle_2](./puzzle_screenshot_2.png)
+<img src="puzzle_screenshot_1.png" width="200">
+<img src="puzzle_screenshot_2.png" width="200">
 
 ### Personal Reflections
 
