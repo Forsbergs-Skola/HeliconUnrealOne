@@ -11,6 +11,9 @@ HeliconUnreal/FileOpenOrder/
 *.user
 *.suo
 
+# JetBrains Rider / IntelliJ
+.idea/
+
 # Compiled files
 *.pdb
 *.exp
