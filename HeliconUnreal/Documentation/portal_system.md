@@ -77,6 +77,8 @@ The portal is meant to support seamless traversal through `Map_Game`, which matc
 Compared to the earlier prototype, v2 is cleaner, more reusable, and easier to document.
 
 <img width="1482" height="1256" alt="image" src="https://github.com/user-attachments/assets/22388421-a68c-4cc3-92ab-e5b69f9bbfd1" />
+<img width="1976" height="1077" alt="image" src="https://github.com/user-attachments/assets/281f7204-eba2-4539-afb8-bb6e16d77044" />
+
 
 Version 2 has a lot more depth and looks better.
 
