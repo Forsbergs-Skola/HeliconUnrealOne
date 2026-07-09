@@ -60,7 +60,7 @@ public:
 	TObjectPtr<UStaticMeshComponent> NodeMesh;
 	
 	UPROPERTY(EditAnywhere, Category = "Node")
-	TObjectPtr<class USphereComponent> ClickSphere;
+	TObjectPtr<class UBoxComponent> ClickBox;
     
 	UPROPERTY(EditAnywhere, Category = "Node|Visual")
 	UMaterialInterface* NodeMaterial;

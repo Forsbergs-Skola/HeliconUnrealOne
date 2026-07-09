@@ -1,10 +1,10 @@
 #include "BoardPuzzleNode.h"
 #include "Components/PrimitiveComponent.h"
+#include "Components/BoxComponent.h"
 #include "BoardPuzzleLink.h"
 #include "BoardPuzzleBoard.h"
 #include "DebugUtility.h"
 #include "CPP_HeliconGameInstance.h"
-#include "Components/SphereComponent.h"
 
 ABoardPuzzleNode::ABoardPuzzleNode()
 {
@@ -12,20 +12,17 @@ ABoardPuzzleNode::ABoardPuzzleNode()
 
     RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 
-    ClickSphere = CreateDefaultSubobject<USphereComponent>(TEXT("ClickSphere"));
-    ClickSphere->SetupAttachment(RootComponent);
+    ClickBox = CreateDefaultSubobject<UBoxComponent>(TEXT("ClickBox"));
+    ClickBox->SetupAttachment(RootComponent);
 
-    ClickSphere->InitSphereRadius(20.f); 
+    ClickBox->SetBoxExtent(FVector(20.f));
 
-    ClickSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-    ClickSphere->SetCollisionResponseToAllChannels(ECR_Ignore);
-    ClickSphere->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+    ClickBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+    ClickBox->SetCollisionResponseToAllChannels(ECR_Ignore);
+    ClickBox->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
 
     NodeMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("NodeMesh"));
-    NodeMesh->SetupAttachment(ClickSphere);
-    
-    ClickSphere->SetGenerateOverlapEvents(false);
-    ClickSphere->bSelectable = true; 
+    NodeMesh->SetupAttachment(ClickBox);
 }
 
 void ABoardPuzzleNode::BeginPlay()
@@ -41,13 +38,13 @@ void ABoardPuzzleNode::BeginPlay()
     {
         SCREEN_LOG(3, FColor::Red, TEXT("No NodeMaterial assigned to {0}!"), *GetName());
     }
-    
+
     if (NodeMesh && NodeMaterial)
     {
         NodeMesh->SetMaterial(0, NodeMaterial);
     }
 
-    ClickSphere->OnClicked.AddDynamic(this, &ABoardPuzzleNode::OnNodeClicked);
+    ClickBox->OnClicked.AddDynamic(this, &ABoardPuzzleNode::OnNodeClicked);
 }
 
 void ABoardPuzzleNode::Tick(float DeltaTime)
@@ -57,31 +54,63 @@ void ABoardPuzzleNode::Tick(float DeltaTime)
 
 void ABoardPuzzleNode::OnNodeClicked(UPrimitiveComponent* ClickedComp, FKey ButtonPressed)
 {
-    UE_LOG(LogTemp, Warning, TEXT("Node clicked!"));
-    UnlockLink();
+    APlayerController* PC = GetWorld()->GetFirstPlayerController();
+
+    if (!PC)
+    {
+        return;
+    }
+
+    FVector MouseLocation;
+    FVector MouseDirection;
+
+    if (!PC->DeprojectMousePositionToWorld(MouseLocation, MouseDirection))
+    {
+        return;
+    }
+
+    FVector TraceEnd = MouseLocation + MouseDirection * 10000.f;
+
+    FHitResult Hit;
+
+    FCollisionQueryParams Params;
+    Params.AddIgnoredActor(PC->GetPawn());
+
+    if (GetWorld()->LineTraceSingleByChannel(
+        Hit,
+        MouseLocation,
+        TraceEnd,
+        ECC_Visibility,
+        Params))
+    {
+        ABoardPuzzleNode* HitNode = Cast<ABoardPuzzleNode>(Hit.GetActor());
+
+        if (HitNode)
+        {
+            SCREEN_LOG(3, FColor::Green,
+                TEXT("Clicked Node: {0}"),
+                *HitNode->GetName());
+
+            HitNode->UnlockLink();
+        }
+    }
 }
 
 void ABoardPuzzleNode::UnlockLink()
-{ 
-    SCREEN_LOG(3, FColor::Yellow, TEXT("=== UnlockLink() started on Node: {0} ==="), *GetName());
+{
+    SCREEN_LOG(3, FColor::Yellow,
+        TEXT("=== UnlockLink() started on Node: {0} ==="),
+        *GetName());
 
-    SCREEN_LOG(3, FColor::Yellow, TEXT("StartingNode: {0} | EndingNode: {0}"), bIsStartingNode ? TEXT("TRUE") : TEXT("FALSE"),
-        bIsEndingNode ? TEXT("TRUE") : TEXT("FALSE"));
-    
     if (OwnedLink)
     {
         if (OwnedLink->GetIsUnlocked())
         {
-            SCREEN_LOG(3, FColor::Yellow, TEXT("STOPPED: Link {0} is already unlocked. Skipping duplicate registration."), *OwnedLink->GetName());
-            HandleEndingNode(); 
+            HandleEndingNode();
             return;
         }
 
         HandleNormalNode();
-    }
-    else 
-    {
-        SCREEN_LOG(3, FColor::Yellow, TEXT("{0} has no OwnedLink, skipping link unlock logic."), *GetName());
     }
 
     HandleEndingNode();
@@ -89,74 +118,55 @@ void ABoardPuzzleNode::UnlockLink()
 
 bool ABoardPuzzleNode::CheckCompletion()
 {
-    if (Board)
+    if (!Board)
     {
-        SCREEN_LOG(3, FColor::Yellow, TEXT("HasCompletedCorrectly = {0}"), 
-          Board->HasCompletedCorrectly() ? TEXT("TRUE") : TEXT("FALSE"));     
+        return false;
     }
-    
+
     if (Board->HasCompletedCorrectly())
     {
         if (NodeMesh && EndingNodeMaterial)
         {
             NodeMesh->SetMaterial(0, EndingNodeMaterial);
-                
-            SCREEN_LOG(3, FColor::Yellow, TEXT("Applied ending material to {0}"), *GetName());
-        }
-        else
-        {
-            SCREEN_LOG(3, FColor::Red, TEXT("NodeMesh or EndingNodeMaterial is NULL!"));
         }
 
-        SCREEN_LOG(3, FColor::Green, TEXT("Board{0}  Completed!"), Board->ID());
         return true;
     }
-    SCREEN_LOG(3, FColor::Red, TEXT("Board{0} Not Completed!"), Board->ID());
+
     return false;
 }
 
 void ABoardPuzzleNode::NotifyCompletion()
 {
-    UCPP_HeliconGameInstance* GameInstance = Cast<UCPP_HeliconGameInstance>(GetWorld()->GetGameInstance());
-	
+    UCPP_HeliconGameInstance* GameInstance =
+        Cast<UCPP_HeliconGameInstance>(GetWorld()->GetGameInstance());
+
     if (GameInstance && Board)
     {
         FEventTagsStruct TagStruct;
+
         TArray<FName> TagList;
         TagList.Add("BOARD_PUZZLE");
         TagList.Add(*Board->ID().ToString());
+
         TagStruct.TagsList = TagList;
+
         GameInstance->EventRelay->NotifyGameDataUpdated(TagStruct);
-        
-        SCREEN_LOG(3, FColor::Green, TEXT("Notified Completion, Tag {0}"), *Board->ID().ToString());
-        return;
     }
-    SCREEN_LOG(3, FColor::Red, TEXT("Failed to get or cast to game instance!"));
 }
 
 void ABoardPuzzleNode::UpdateBoard()
 {
-    if (Board)
+    if (Board && OwnedLink)
     {
         Board->AddCompletedLinks(OwnedLink->GetID());
-    }
-    else
-    {
-        SCREEN_LOG(3, FColor::Red, TEXT("Board ( %s ) pointer is NULL on %s!"), Board->ID() ,*GetName());
-        UE_LOG(LogTemp, Error, TEXT("Notified Completion, Tag ( %s )"), *Board->ID().ToString());
     }
 }
 
 void ABoardPuzzleNode::HandleEndingNode()
 {
-    if (bIsEndingNode)
+    if (bIsEndingNode && Board)
     {
-        if (!Board)
-        {
-            SCREEN_LOG(3, FColor::Red, TEXT("STOPPED: Board is NULL on %s!"), *GetName());
-            return;
-        }
-
         if (CheckCompletion())
         {
             NotifyCompletion();
@@ -168,35 +178,12 @@ void ABoardPuzzleNode::HandleNormalNode()
 {
     if (!bIsStartingNode)
     {
-        if (ConnectedLinks.IsEmpty())
-        {
-            SCREEN_LOG(3, FColor::Red, TEXT("STOPPED: %s has no connected links!"), *GetName());
-            return; 
-        }
-
-        bool bAllLinksUnlocked = true;
-
         for (const ABoardPuzzleLink* Link : ConnectedLinks)
         {
-            if (!Link)
+            if (Link && !Link->GetIsUnlocked())
             {
-                continue;
+                return;
             }
-            
-            SCREEN_LOG(3, FColor::Cyan, TEXT("Checking Link %s. Status: %s"), *Link->GetName(),
-                Link->GetIsUnlocked() ? TEXT("Unlocked") : TEXT("LOCKED"));
-            
-            if (!Link->GetIsUnlocked())
-            {
-                bAllLinksUnlocked = false;
-                break;
-            }
-        }
-
-        if (!bAllLinksUnlocked)
-        {
-            SCREEN_LOG(3, FColor::Yellow, TEXT("STOPPED: Previous links are still locked."));
-            return; // Hard stop! Prevents moving down to the unlock logic below
         }
     }
 
@@ -212,18 +199,10 @@ void ABoardPuzzleNode::Reset()
     if (OwnedLink)
     {
         OwnedLink->SetIsUnlocked(false);
-        
+
         if (Board)
         {
             Board->RemoveCompletedLink(OwnedLink->GetID());
         }
-        else
-        {
-            SCREEN_LOG(3, FColor::Red, TEXT("%s: Board pointer is NULL!"), *GetName());
-        }
-    }
-    else
-    {
-        SCREEN_LOG(3, FColor::Red, TEXT("%s was clicked, but its OwnedLink is NULL!"), *GetName());
     }
 }
