@@ -29,6 +29,9 @@ The current implementation lives in the `Content/PortalSystem` content set and i
 
 This version is the one implemented in `HeliconUnreal`.
 
+<img width="628" height="711" alt="image" src="https://github.com/user-attachments/assets/76bc9635-69a7-4fdc-a5d6-240f754c77bc" />
+
+
 ## Version 1 Notes
 
 v1 was the original portal prototype TestPortal. It focused on a simple walk-through portal that could show the destination space through a live render target, then move the player through the portal with overlap-driven teleport logic.
