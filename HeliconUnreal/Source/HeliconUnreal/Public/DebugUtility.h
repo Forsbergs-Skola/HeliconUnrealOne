@@ -71,5 +71,5 @@ public:
 	}
 };
 
-SCREEN_LOG(3, TEXT("STRING {0}", string )
+//SCREEN_LOG(3, TEXT("STRING {0}", string )
 
