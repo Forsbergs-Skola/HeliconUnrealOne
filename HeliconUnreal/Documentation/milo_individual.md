@@ -46,3 +46,4 @@ I found myself less motivated during the final week of the project due to some f
 
 For the next project i will take on less work during the weekends to give myself time to rest and reload.
 
+I also feel that i could have challenged myself and coming up with more design for the game since i feel a bit less confident in coming up with the design ideas.
