@@ -5,13 +5,17 @@
 ### My Technical Contributions
 
 #### Singleton Services
-I designed and implemented our [singleton solution](./game_instance_as_singleton.md) as UCPP_HeliconGameInstance.
+I designed and implemented our [singleton solution](./game_instance_as_singleton.md) as [UCPP_HeliconGameInstance].
+[Header](../Source/HeliconUnreal/Public/CPP_HeliconGameInstance.h)
+[Implementation](../Source/HeliconUnreal/Private/CPP_HeliconGameInstance.cpp)
 
 #### Event System
 I designed and implemented the centralized [event system](./event_service_and_tags.md) as UCPP_EventRelay.
+Header: [../Source/HeliconUnreal/Public/CPP_EventRelay.h](../Source/HeliconUnreal/Public/CPP_EventRelay.h)
+Implementation: [../Source/HeliconUnreal/Private/CPP_EventRelay.cpp](../Source/HeliconUnreal/Private/CPP_EventRelay.cpp)
 
 #### Dialogue System
-I designed our game's [branching dialogue system](./dialogue_system.md) as UCPP_DialogueService and WBP_DialogueUI
+I designed our game's [branching dialogue system](./dialogue_system.md) as UCPP_DialogueService and WBP_DialogueUI.
 
 #### Sliding-Tile Puzzle
 I designed and implemented a widget-based sliding tile puzzle, and integrated it into the overall game sequence via the singleton services mentioned above.
