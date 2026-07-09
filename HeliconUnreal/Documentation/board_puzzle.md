@@ -58,14 +58,13 @@ The listener connects the board puzzle system to the project's event system.
 When the puzzle is completed, the listener receives the broadcast event and exposes it through a Blueprint event. This allows Blueprint logic to react to puzzle completion without introducing direct dependencies on the puzzle actors.
 
 ---
-
 # Completion Events
 
 Once the board has validated the puzzle successfully, the ending node broadcasts an event containing the board identifier.
 
 ```
 BOARD_PUZZLE
-<BoardID>
+BoardID
 ```
 
 Other systems can listen for this event to unlock gameplay elements, start scripted sequences, or update progression without requiring direct references to the puzzle.
