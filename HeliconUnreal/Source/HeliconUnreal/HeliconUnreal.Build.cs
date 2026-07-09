@@ -18,10 +18,15 @@ public class HeliconUnreal : ModuleRules
 			"StateTreeModule",
 			"GameplayStateTreeModule",
 			"UMG",
-			"Slate"
+			"Slate",
+			"Niagara"
 		});
 
-		PrivateDependencyModuleNames.AddRange(new string[] { });
+		PrivateDependencyModuleNames.AddRange(new string[]
+		{
+			"Slate",
+			"SlateCore",
+		});
 
 		PublicIncludePaths.AddRange(new string[] {
 			"HeliconUnreal",
