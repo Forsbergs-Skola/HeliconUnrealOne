@@ -29,12 +29,18 @@ The current implementation lives in the `Content/PortalSystem` content set and i
 
 This version is the one implemented in `HeliconUnreal`.
 
-<img width="628" height="711" alt="image" src="https://github.com/user-attachments/assets/76bc9635-69a7-4fdc-a5d6-240f754c77bc" />
-
 
 ## Version 1 Notes
 
 v1 was the original portal prototype TestPortal. It focused on a simple walk-through portal that could show the destination space through a live render target, then move the player through the portal with overlap-driven teleport logic.
+
+
+
+<img width="628" height="711" alt="image" src="https://github.com/user-attachments/assets/76bc9635-69a7-4fdc-a5d6-240f754c77bc" />
+
+<img width="1721" height="1167" alt="image" src="https://github.com/user-attachments/assets/20a84cf6-aeda-4180-a28d-7bf33988e5ed" />
+
+Here is what the v1 system looked like
 
 ### V1 Placeholder Notes
 
@@ -69,6 +75,11 @@ The portal is meant to support seamless traversal through `Map_Game`, which matc
 ## Why V2 Exists
 
 Compared to the earlier prototype, v2 is cleaner, more reusable, and easier to document.
+
+<img width="1482" height="1256" alt="image" src="https://github.com/user-attachments/assets/22388421-a68c-4cc3-92ab-e5b69f9bbfd1" />
+
+Version 2 has a lot more depth and looks better.
+
 
 The older portal version was more tightly tied to a specific render-target and overlap-based setup. The current system is more clearly organized around the project content itself, which makes it better suited to the way `HeliconUnreal` is built.
 
