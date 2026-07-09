@@ -15,6 +15,7 @@ I designed and implemented the centralized [event system](./event_service_and_ta
 
 - Header: [CPP_EventRelay.h](../Source/HeliconUnreal/Public/CPP_EventRelay.h)
 - Implementation: [CPP_EventRelay.cpp](../Source/HeliconUnreal/Private/CPP_EventRelay.cpp)
+- User Interface: [WBP_DialogueUI] 
 
 #### Dialogue System
 I designed our game's [branching dialogue system](./dialogue_system.md) as UCPP_DialogueService and WBP_DialogueUI, and a dialogue audio system as UCPP_DialogueAudio
@@ -22,8 +23,18 @@ I designed our game's [branching dialogue system](./dialogue_system.md) as UCPP_
 - Header: [CPP_DialogueService.h](../Source/HeliconUnreal/Public/CPP_DialogueService.h), [CPP_DialogueAudio.h](../Source/HeliconUnreal/Public/CPP_DialogueAudio.h)
 - Implementation: [CPP_DialogueService.cpp](../Source/HeliconUnreal/Private/CPP_DialogueService.cpp), [CPP_DialogueAudio.cpp](../Source/HeliconUnreal/Private/CPP_DialogueAudio.cpp)
 
+#### State Machine Component
+I designed and implemented a simple and flexible FSM actor component as StateMachineComponent.
+- Header [StateMachineComponent.h](../Source/HeliconUnreal/Public/StateMachineComponent.h)
+- Implementation: [StateMachineComponent.cpp](../Source/HeliconUnreal/Private/StateMachineComponent.cpp)
+
 #### Sliding-Tile Puzzle
 I designed and implemented a widget-based sliding tile puzzle, and integrated it into the overall game sequence via the singleton services mentioned above.
+
+- Widget Blueprints: [Puzzle Widget](../Content/GUI/ManagedWidgets/SlidingTilePuzzle/WBP_SlidingPuzzle.uasset), [Puzzle Tile Widget](../Content/GUI/ManagedWidgets/SlidingTilePuzzle/WBP_SlidingPuzzleTile.uasset)
+
+![puzzle_1](./puzzle_screenshot_1.png)
+![puzzle_2](./puzzle_screenshot_2.png)
 
 ### Personal Reflections
 
