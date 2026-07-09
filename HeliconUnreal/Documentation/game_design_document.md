@@ -1,4 +1,4 @@
-# Game Design Document Template
+# Game Design Document 
 
 ## Introduction
 
